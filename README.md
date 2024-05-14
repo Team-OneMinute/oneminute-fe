@@ -8,3 +8,10 @@ https://team-oneminute.github.io/oneminute-fe/
 2. commit and push
 3. marge stg from stg
 4. marge prod from stg
+
+## Bot
+### name
+- stg
+  - OneMinuteStg_bot (username)
+  - OneMinuteStg (name)
+- prod
