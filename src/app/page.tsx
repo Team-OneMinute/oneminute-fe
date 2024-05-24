@@ -6,11 +6,16 @@ import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useOneMinuteContract } from "@/app/hooks/useOneMinuteContract";
 import { useTonConnect } from "@/app/hooks/useTonConnect";
+import { useFirestore } from "@/app/hooks/useFirestore";
+import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 
 export default function Home() {
   const router = useRouter();
   const { sendBet } = useOneMinuteContract();
-    const { connected } = useTonConnect();
+  const { addDocument } = useFirestore();
+  const { dateFormat } = useDateFormatter();
+  const { connected, sender, isSent, transactionResponse } = useTonConnect();
+
   return (
     <main className={styles.main}>
       <Typography variant="h2" sx={{ color: "yellow" }}>
@@ -34,16 +39,22 @@ export default function Home() {
           <Button
             variant="contained"
             sx={{ width: "45%" }}
-            onClick={() => sendBet()}
+            onClick={() => router.push("/game")}
           >
             main
           </Button>
         )}
       </Box>
-      <Button variant="contained" sx={{ width: "20%" }}>
-        user
+      <Button
+        variant="contained"
+        sx={{ width: "100%" }}
+        onClick={() => router.push("/login")}
+      >
+        telegram login
       </Button>
       <TonConnectButton />
     </main>
   );
 }
+
+
