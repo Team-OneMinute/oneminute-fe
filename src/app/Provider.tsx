@@ -5,8 +5,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const manifestUrl =
-  "https://team-oneminute.github.io/oneminute-fe/manifest.json";
+const manifestUrl = "https://oneminute-88837.web.app/manifest.json";
 
 const Provider: React.FC<Props> = ({ children }) => {
     return (
