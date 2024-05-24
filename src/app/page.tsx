@@ -39,27 +39,22 @@ export default function Home() {
           <Button
             variant="contained"
             sx={{ width: "45%" }}
-            onClick={() => {
-              sendBet();
-              if (isSent) {
-                const transactionCollectionName = "0001_transaction";
-                const transactionDocumentData = {
-                  wallet_address: sender.address?.toString(),
-                  created_at: dateFormat(new Date()),
-                };
-                console.log(transactionResponse);
-                addDocument(transactionCollectionName, transactionDocumentData);
-              }
-            }}
+            onClick={() => router.push("/game")}
           >
             main
           </Button>
         )}
       </Box>
-      <Button variant="contained" sx={{ width: "20%" }}>
-        user
+      <Button
+        variant="contained"
+        sx={{ width: "100%" }}
+        onClick={() => router.push("/login")}
+      >
+        telegram login
       </Button>
       <TonConnectButton />
     </main>
   );
 }
+
+
