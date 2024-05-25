@@ -36,22 +36,34 @@ export default function Login() {
     //       console.error("Error signing in with custom token:", error);
     //     });
     // }
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-web-app.js";
-    script.async = true;
-    script.onload = () => {
-      if (window.Telegram) {
-        window.Telegram.WebApp.ready();
-        const initData = window.Telegram.WebApp.initData;
-        setInitData(initData);
-        console.log(initData);
-      }
-    };
-    document.head.appendChild(script);
+    const scriptSrc = "https://telegram.org/js/telegram-web-app.js";
+    // スクリプトがすでに存在するかどうかを確認
+    const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
 
-    return () => {
-      document.head.removeChild(script);
-    };
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.src = scriptSrc;
+      script.async = true;
+
+      const head = document.head;
+      const firstScript = head.querySelector('script');
+
+      if (firstScript) {
+        head.insertBefore(script, firstScript);
+      } else {
+        head.appendChild(script);
+      }
+    
+
+      script.onload = () => {
+        if (window.Telegram) {
+          window.Telegram.WebApp.ready();
+          const initData = window.Telegram.WebApp.initData;
+          setInitData(initData);
+          console.log(initData);
+        }
+      };
+    }
   }, []);
 
   return <div>login page & init dat = {initData}</div>;
