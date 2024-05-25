@@ -1591,6 +1591,11 @@
   resolved "https://registry.npmjs.org/@types/stats.js/-/stats.js-0.17.3.tgz"
   integrity sha512-pXNfAD3KHOdif9EQXZ9deK82HVNaXP5ZIF5RP2QG6OQFNTaY2YIetfrE9t528vEreGQvEPRDDc8muaoYeK0SxQ==
 
+"@types/telegram-web-app@^7.2.1":
+  version "7.2.1"
+  resolved "https://registry.npmjs.org/@types/telegram-web-app/-/telegram-web-app-7.2.1.tgz"
+  integrity sha512-aXUUyTE8vVwolOta84wPybKNAeZq6rPVYCn/mnewN+tqF5QBqoQFnvqUATn7yNFH2+hpYF2Z2fKU6lnMQ8EC3A==
+
 "@types/three@^0.164.0":
   version "0.164.0"
   resolved "https://registry.npmjs.org/@types/three/-/three-0.164.0.tgz"
