@@ -25,19 +25,7 @@ export default function Login() {
     // const urlParams = new URLSearchParams(window.location.search);
     // const token = urlParams.get("token");
 
-    // if (token) {
-    //   // カスタムトークンを使用してFirebaseにログイン
-    //   firebase
-    //     .auth()
-    //     .signInWithCustomToken(token)
-    //     .then((userCredential) => {
-    //       console.log("User logged in:", userCredential.user);
-    //       setUser(userCredential.user as User);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error signing in with custom token:", error);
-    //     });
-    // }
+
     const scriptSrc = "https://telegram.org/js/telegram-web-app.js";
     // スクリプトがすでに存在するかどうかを確認
     const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);

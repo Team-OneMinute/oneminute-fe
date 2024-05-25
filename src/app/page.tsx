@@ -10,19 +10,24 @@ import { useFirestore } from "@/app/hooks/useFirestore";
 import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
+import { useAuthConnect } from "@/app/hooks/useAuthConnect";
 
 export default function Home() {
   const router = useRouter();
   const { sendBet } = useOneMinuteContract();
   const { addDocument } = useFirestore();
   const { dateFormat } = useDateFormatter();
+  const { firebaseAuthConnect } = useAuthConnect();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
+  const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isAuthConnected == false) {
       const initDataFromTelegram = WebApp.initData;
       setInitData(initDataFromTelegram);
+      const result = firebaseAuthConnect(initData);
+      setIsAuthConnected(result);
     }
   }, []);
 
