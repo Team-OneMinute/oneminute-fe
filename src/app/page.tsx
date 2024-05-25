@@ -8,6 +8,7 @@ import { useOneMinuteContract } from "@/app/hooks/useOneMinuteContract";
 import { useTonConnect } from "@/app/hooks/useTonConnect";
 import { useFirestore } from "@/app/hooks/useFirestore";
 import { useDateFormatter } from "@/app/hooks/useDateFormatter";
+import WebApp from "@twa-dev/sdk";
 
 export default function Home() {
   const router = useRouter();
@@ -15,11 +16,13 @@ export default function Home() {
   const { addDocument } = useFirestore();
   const { dateFormat } = useDateFormatter();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
-
+  const initData = WebApp.initData;
+  console.log("initData");
+  console.log(initData);
   return (
     <main className={styles.main}>
       <Typography variant="h2" sx={{ color: "yellow" }}>
-        OneMinute
+        OneMinute  {initData}
       </Typography>
       <Box
         sx={{
