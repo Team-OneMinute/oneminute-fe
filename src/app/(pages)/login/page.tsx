@@ -17,6 +17,7 @@ import { firebaseConfig } from "@/app/config/firebaseConfig";
 export default function Login() {
   //const [user, setUser] = useState<User | null>(null);
   const [initData, setInitData] = useState<string>("initialString");
+  const [isExpanded, setIsExpanded] = useState<boolean>();
 
   useEffect(() => {
     // // URLからクエリパラメータを取得
@@ -58,13 +59,23 @@ export default function Login() {
       script.onload = () => {
         if (window.Telegram) {
           window.Telegram.WebApp.ready();
+          console.log("start onload");
           const initData = window.Telegram.WebApp.initData;
+          const initWebApp = window.Telegram.WebApp;
           setInitData(initData);
+          setIsExpanded(initWebApp.isExpanded);
+          console.log("imit dat");
           console.log(initData);
+          console.log("init web app");
+          console.log(initWebApp);
         }
       };
     }
   }, []);
 
-  return <div>login page & init dat = {initData}</div>;
+  return (
+    <div>
+      login page & init dat = {initData}, & isExpanded = {isExpanded}
+    </div>
+  );
 }
