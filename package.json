@@ -29,6 +29,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/telegram-web-app": "^7.2.1",
     "@types/three": "^0.164.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
