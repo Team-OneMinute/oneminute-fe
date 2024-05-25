@@ -20,6 +20,7 @@ export default function Login() {
   const [isExpanded, setIsExpanded] = useState<boolean>();
 
   useEffect(() => {
+
     // // URLからクエリパラメータを取得
     // const urlParams = new URLSearchParams(window.location.search);
     // const token = urlParams.get("token");
