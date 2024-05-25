@@ -16,9 +16,13 @@ export default function Home() {
   const { addDocument } = useFirestore();
   const { dateFormat } = useDateFormatter();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
-  const initData = WebApp.initData;
-  console.log("initData");
-  console.log(initData);
+  let initData;
+  if (typeof window !== "undefined") {
+      initData = WebApp.initData;
+      console.log("initData");
+      console.log(initData);
+  }
+
   return (
     <main className={styles.main}>
       <Typography variant="h2" sx={{ color: "yellow" }}>
