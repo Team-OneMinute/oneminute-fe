@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import styles from "./page.module.css";
-import { TonConnectButton } from '@tonconnect/ui-react';
+import { TonConnectButton } from "@tonconnect/ui-react";
 import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useOneMinuteContract } from "@/app/hooks/useOneMinuteContract";
@@ -9,6 +9,7 @@ import { useTonConnect } from "@/app/hooks/useTonConnect";
 import { useFirestore } from "@/app/hooks/useFirestore";
 import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 import WebApp from "@twa-dev/sdk";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const router = useRouter();
@@ -16,17 +17,19 @@ export default function Home() {
   const { addDocument } = useFirestore();
   const { dateFormat } = useDateFormatter();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
-  let initData;
-  if (typeof window !== "undefined") {
-      initData = WebApp.initData;
-      console.log("initData");
-      console.log(initData);
-  }
+  const [initData, setInitData] = useState<string>("initialdata");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const initDataFromTelegram = WebApp.initData;
+      setInitData(initDataFromTelegram);
+    }
+  }, []);
 
   return (
     <main className={styles.main}>
       <Typography variant="h2" sx={{ color: "yellow" }}>
-        OneMinute  {initData}
+        OneMinute
       </Typography>
       <Box
         sx={{
@@ -59,9 +62,8 @@ export default function Home() {
       >
         telegram login
       </Button>
+      <text color="white">{initData}</text>
       <TonConnectButton />
     </main>
   );
 }
-
-
