@@ -20,15 +20,20 @@ export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
+  const [customToken, setCustomToken] = useState<string>("");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && isAuthConnected == false) {
-      const initDataFromTelegram = WebApp.initData;
-      setInitData(initDataFromTelegram);
-      const result = firebaseAuthConnect(initData);
-      setIsAuthConnected(result);
-    }
+    (async () => {
+      if (typeof window !== "undefined" && isAuthConnected == false) {
+        const initDataFromTelegram = WebApp.initData;
+        setInitData(initDataFromTelegram);
+        const result = await firebaseAuthConnect(initDataFromTelegram);
+        setCustomToken(result.token);
+        console.log("customToken", result);
+        setIsAuthConnected(result.token != "");
+      }
+    })();
   }, []);
 
   return (
@@ -68,6 +73,7 @@ export default function Home() {
         telegram login
       </Button>
       <text color="white">{initData}</text>
+      <text color="white">{customToken}</text>
       <TonConnectButton />
     </main>
   );
