@@ -29,9 +29,7 @@ export default function Home() {
         const initDataFromTelegram = WebApp.initData;
         setInitData(initDataFromTelegram);
         const result = await firebaseAuthConnect(initDataFromTelegram);
-        setCustomToken(result.token);
-        console.log("customToken", result);
-        setIsAuthConnected(result.token != "");
+        console.log("sign in result", result);
       }
     })();
   }, []);

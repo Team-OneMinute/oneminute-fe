@@ -1,4 +1,9 @@
+import { firebaseConfig } from "@/app/config/firebaseConfig";
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithCustomToken } from "firebase/auth";
+
 export function useAuthConnect() {
+  const app = fireStoreInitialized();
   return {
     firebaseAuthConnect: async (initData: string) => {
       const decodedInitData = decodeURIComponent(initData);
@@ -32,26 +37,28 @@ export function useAuthConnect() {
           method: "GET",
         }
       );
-      return await response.json().then((value) => {
-        return value;
-      });
 
       // Step5:Firebase auth connect
-          console.log(requestParam);
-          
-          
-      // return true;
-      //     firebase
-      //       .auth()
-      //       .signInWithCustomToken(token)
-      //       .then((userCredential) => {
-      //         console.log("User logged in:", userCredential.user);
-      //         setUser(userCredential.user as User);
-      //       })
-      //       .catch((error) => {
-      //         console.error("Error signing in with custom token:", error);
-      //       });
-      //   return state;
+      return await response.json().then(async (value) => {
+        const token: string = String(value.token);
+        console.log("customTokenType: ", (typeof token));
+        console.log("customToken: ", token);
+        const auth = getAuth(app);
+        return await signInWithCustomToken(auth, token)
+          .then((userCredential) => {
+            console.log("User logged in:", userCredential.user);
+            return true;
+          })
+          .catch((error) => {
+            console.error("Error signing in with custom token:", error);
+            return false;
+          });
+      });
     },
   };
 }
+
+const fireStoreInitialized = () => {
+  const app = initializeApp(firebaseConfig);
+  return app;
+};
