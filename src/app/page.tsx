@@ -11,6 +11,9 @@ import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { useAuthConnect } from "@/app/hooks/useAuthConnect";
+import eruda from "eruda";
+
+eruda.init();
 
 export default function Home() {
   const router = useRouter();
