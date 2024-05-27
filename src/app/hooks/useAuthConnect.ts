@@ -23,8 +23,11 @@ export function useAuthConnect() {
         query: initData,
       });
       console.log("request_query", request_query);
+      // const environment = "local"; // local確認
       const response = await fetch(
-        `https://us-central1-oneminute-88837.cloudfunctions.net/telegramAuth?${initData}`,
+        `https://us-central1-oneminute-88837.cloudfunctions.net/telegramAuth?${initData}`, // stgにデプロイ時にコメントアウトを外す
+        // `https://us-central1-oneminute-88837.cloudfunctions.net/telegramAuth?${initData}&env=${environment}`, // local確認
+        // `http://127.0.0.1:5001/oneminute-88837/us-central1/telegramAuth?${initData}&env=${environment}`, // local確認
         {
           method: "GET",
         }
