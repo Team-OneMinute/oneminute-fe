@@ -11,6 +11,8 @@ import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { useAuthConnect } from "@/app/hooks/useAuthConnect";
+import { useEnv } from "./hooks/useEnv";
+import { initDataMock } from "@/app/mock/telegramInitData"
 
 export default function Home() {
   const router = useRouter();
@@ -18,6 +20,7 @@ export default function Home() {
   const { addDocument } = useFirestore();
   const { dateFormat } = useDateFormatter();
   const { firebaseAuthConnect } = useAuthConnect();
+  const { getEnv } = useEnv();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
@@ -25,7 +28,11 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       if (typeof window !== "undefined" && isAuthConnected == false) {
-        const initDataFromTelegram = WebApp.initData;
+        let initDataFromTelegram = WebApp.initData;
+        console.log(getEnv());
+        if (getEnv() == "dev") {
+          initDataFromTelegram = initDataMock;
+        }
         setInitData(
           initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
         );

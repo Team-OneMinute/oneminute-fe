@@ -1,0 +1,2 @@
+export const initDataMock =
+  "query_id=AAAAAAAAAAAAAAAAAAAAAAAA&user=%7B%22id%22%3A9999999999%2C%22first_name%22%3A%22John%22%2C%22last_name%22%3A%22Doe%22%2C%22username%22%3A%22johndoe%22%2C%22language_code%22%3A%22ja%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1620000000&hash=d07a2643547d70c2e5f35c7ffa3a2c61c5af022a8092f0e2778d2b587b401bb0";

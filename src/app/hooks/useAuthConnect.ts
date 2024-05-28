@@ -1,8 +1,11 @@
 import { firebaseConfig } from "@/app/config/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
+import { useFetch } from "@/app/hooks/useFetch";
 
 export function useAuthConnect() {
+  const { get } = useFetch("stg");
+
   return {
     firebaseAuthConnect: async (initData: string) => {
       const auth = fireStoreInitialized();
@@ -25,18 +28,10 @@ export function useAuthConnect() {
 
       // STEP:4 Firebase functionで　hash検証
       const request_query = JSON.stringify({
-        query: initData,
+        query: requestParam,
       });
       console.log("request_query", request_query);
-      // const environment = "local"; // local確認
-      const response = await fetch(
-        `https://us-central1-oneminute-88837.cloudfunctions.net/telegramAuth?${initData}`, // stgにデプロイ時にコメントアウトを外す
-        // `https://us-central1-oneminute-88837.cloudfunctions.net/telegramAuth?${initData}&env=${environment}`, // local確認
-        // `http://127.0.0.1:5001/oneminute-88837/us-central1/telegramAuth?${initData}&env=${environment}`, // local確認
-        {
-          method: "GET",
-        }
-      );
+      const response = await get("/telegramAuth", requestParam);
 
       // Step5:Firebase auth connect
       return await response.json().then(async (value) => {
