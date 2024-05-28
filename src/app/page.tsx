@@ -20,7 +20,7 @@ export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
-  const [customToken, setCustomToken] = useState<string>("");
+  const [customToken, setCustomToken] = useState<string>("init");
   const [userData, setUserData] = useState<string>("init");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
@@ -77,7 +77,7 @@ export default function Home() {
         telegram login
       </Button>
       <text color="white">{initData}</text>
-      <text color="white">{customToken}</text>
+      <text color="white">customToken: {customToken}</text>
       <text color="white">isAuthConnected: {String(isAuthConnected)}</text>
       <text color="white">userData: {userData}</text>
       <TonConnectButton />
