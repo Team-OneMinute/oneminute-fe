@@ -5,13 +5,16 @@ import { getAuth, signInWithCustomToken } from "firebase/auth";
 export function useAuthConnect() {
   const app = fireStoreInitialized();
   return {
-    firebaseAuthConnect: async (initData: string) => {
+    firebaseAuthConnect: async (initData: string, setUserData: (userData: string) => void) => {
       const decodedInitData = decodeURIComponent(initData);
-      console.log(decodedInitData);
+      console.log("decodedInitData", decodedInitData);
 
       // Step 2: リクエストパラメータを配列に格納
       const paramsArray = decodedInitData.split("&").map((param) => {
         const [key, value] = param.split("=");
+        if (key == "user") {
+          setUserData(value != "" ? value : "blankData");
+        }
         return { key, value };
       });
 
