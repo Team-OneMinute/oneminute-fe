@@ -29,11 +29,13 @@ export default function Home() {
       if (typeof window !== "undefined" && isAuthConnected == false) {
         const initDataFromTelegram = WebApp.initData;
         setInitData(initDataFromTelegram != "" ? initDataFromTelegram : "blankData");
-        const result = await firebaseAuthConnect(
+        await firebaseAuthConnect(
           initDataFromTelegram,
+          setCustomToken,
           setUserData
-        );
-        setIsAuthConnected(result);
+        ).then((result) => {
+          setIsAuthConnected(result);
+        });
       }
     })();
   }, []);
@@ -76,7 +78,7 @@ export default function Home() {
       </Button>
       <text color="white">{initData}</text>
       <text color="white">{customToken}</text>
-      <text color="white">isAuthConnected: {isAuthConnected}</text>
+      <text color="white">isAuthConnected: {String(isAuthConnected)}</text>
       <text color="white">userData: {userData}</text>
       <TonConnectButton />
     </main>
