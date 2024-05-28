@@ -11,9 +11,6 @@ import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
 import { useAuthConnect } from "@/app/hooks/useAuthConnect";
-import eruda from "eruda";
-
-eruda.init();
 
 export default function Home() {
   const router = useRouter();
@@ -24,15 +21,19 @@ export default function Home() {
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
   const [customToken, setCustomToken] = useState<string>("");
+  const [userData, setUserData] = useState<string>("init");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
       if (typeof window !== "undefined" && isAuthConnected == false) {
         const initDataFromTelegram = WebApp.initData;
-        setInitData(initDataFromTelegram);
-        const result = await firebaseAuthConnect(initDataFromTelegram);
-        console.log("sign in result", result);
+        setInitData(initDataFromTelegram != "" ? initDataFromTelegram : "blankData");
+        const result = await firebaseAuthConnect(
+          initDataFromTelegram,
+          setUserData
+        );
+        setIsAuthConnected(result);
       }
     })();
   }, []);
@@ -75,6 +76,8 @@ export default function Home() {
       </Button>
       <text color="white">{initData}</text>
       <text color="white">{customToken}</text>
+      <text color="white">isAuthConnected: {isAuthConnected}</text>
+      <text color="white">userData: {userData}</text>
       <TonConnectButton />
     </main>
   );
