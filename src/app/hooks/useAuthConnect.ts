@@ -1,37 +1,17 @@
 import { firebaseConfig } from "@/app/config/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
-import * as dotenv from "dotenv";
-dotenv.config();
-
-export type configInterface = {
-  apiKey: string | undefined;
-  authDomain: string | undefined;
-  projectId: string | undefined;
-  storageBucket: string | undefined;
-  messagingSenderId: string | undefined;
-  appId: string | undefined;
-  measurementId: string | undefined;
-};
 
 export function useAuthConnect() {
   return {
-    firebaseAuthConnect: async (
-      initData: string,
-      setCustomToken: (customToken: string) => void,
-      setUserData: (userData: string) => void,
-      setEnvConfig: (config: configInterface) => void
-    ) => {
-      const auth = fireStoreInitialized(setEnvConfig);
+    firebaseAuthConnect: async (initData: string) => {
+      const auth = fireStoreInitialized();
       const decodedInitData = decodeURIComponent(initData);
       console.log("decodedInitData", decodedInitData);
 
       // Step 2: リクエストパラメータを配列に格納
       const paramsArray = decodedInitData.split("&").map((param) => {
         const [key, value] = param.split("=");
-        if (key == "user") {
-          setUserData(value != "" ? value : "blankData");
-        }
         return { key, value };
       });
 
@@ -61,9 +41,7 @@ export function useAuthConnect() {
       // Step5:Firebase auth connect
       return await response.json().then(async (value) => {
         const token: string = String(value.token);
-        console.log("customTokenType: ", typeof token);
         console.log("customToken: ", token);
-        setCustomToken(token);
         return await signInWithCustomToken(auth, token)
           .then((userCredential) => {
             console.log("User logged in:", userCredential.user);
@@ -78,12 +56,7 @@ export function useAuthConnect() {
   };
 }
 
-const fireStoreInitialized = (
-  setEnvConfig: (config: configInterface) => void
-) => {
-  console.log("firebaseConfig", firebaseConfig);
-  setEnvConfig(firebaseConfig);
-  console.log("processEnv", process.env.REACT_APP_FIREBASE_APIKEY);
+const fireStoreInitialized = () => {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   return auth;

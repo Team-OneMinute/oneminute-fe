@@ -10,7 +10,7 @@ import { useFirestore } from "@/app/hooks/useFirestore";
 import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
-import { configInterface, useAuthConnect } from "@/app/hooks/useAuthConnect";
+import { useAuthConnect } from "@/app/hooks/useAuthConnect";
 
 export default function Home() {
   const router = useRouter();
@@ -20,9 +20,6 @@ export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
-  const [customToken, setCustomToken] = useState<string>("init");
-  const [userData, setUserData] = useState<string>("init");
-  const [envConfig, setEnvConfig] = useState<configInterface>();
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
   useEffect(() => {
@@ -32,12 +29,7 @@ export default function Home() {
         setInitData(
           initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
         );
-        await firebaseAuthConnect(
-          initDataFromTelegram,
-          setCustomToken,
-          setUserData,
-          setEnvConfig
-        ).then((result) => {
+        await firebaseAuthConnect(initDataFromTelegram).then((result) => {
           setIsAuthConnected(result);
         });
       }
@@ -81,16 +73,7 @@ export default function Home() {
         telegram login
       </Button>
       <text color="white">{initData}</text>
-      <text color="white">customToken: {customToken}</text>
       <text color="white">isAuthConnected: {String(isAuthConnected)}</text>
-      <text color="white">userData: {userData}</text>
-      <text color="white">
-        apiKey: {envConfig?.apiKey}, authDomain: {envConfig?.authDomain},
-        projectId: {envConfig?.projectId}, storageBucket:{" "}
-        {envConfig?.storageBucket}, messagingSenderId:{" "}
-        {envConfig?.messagingSenderId}, appId: {envConfig?.appId},
-        measurementId: {envConfig?.measurementId}
-      </text>
       <TonConnectButton />
     </main>
   );
