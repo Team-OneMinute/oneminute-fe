@@ -5,7 +5,7 @@ import { getAuth, signInWithCustomToken } from "firebase/auth";
 export function useAuthConnect() {
   const app = fireStoreInitialized();
   return {
-    firebaseAuthConnect: async (initData: string, setUserData: (userData: string) => void) => {
+    firebaseAuthConnect: async (initData: string, setCustomToken: (customToken: string) => void, setUserData: (userData: string) => void) => {
       const decodedInitData = decodeURIComponent(initData);
       console.log("decodedInitData", decodedInitData);
 
@@ -46,6 +46,7 @@ export function useAuthConnect() {
         const token: string = String(value.token);
         console.log("customTokenType: ", (typeof token));
         console.log("customToken: ", token);
+        setCustomToken(token);
         const auth = getAuth(app);
         return await signInWithCustomToken(auth, token)
           .then((userCredential) => {
