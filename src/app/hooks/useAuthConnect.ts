@@ -1,6 +1,8 @@
 import { firebaseConfig } from "@/app/config/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export type configInterface = {
   apiKey: string | undefined;
@@ -79,8 +81,9 @@ export function useAuthConnect() {
 const fireStoreInitialized = (
   setEnvConfig: (config: configInterface) => void
 ) => {
-  console.log(firebaseConfig);
+  console.log("firebaseConfig", firebaseConfig);
   setEnvConfig(firebaseConfig);
+  console.log("processEnv", process.env.REACT_APP_FIREBASE_APIKEY);
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   return auth;

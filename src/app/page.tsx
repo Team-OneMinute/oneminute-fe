@@ -27,14 +27,14 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      if (typeof window !== "undefined" && isAuthConnected == false) {
-        const initDataFromTelegram = WebApp.initData;
-      // if (isAuthConnected == false) {
-      //   const initDataFromTelegram =
-      //     "query_id=AAEw7NkaAwAAADDs2Rq3VOfw&user=%7B%22id%22%3A6892940336%2C%22first_name%22%3A%22Atsushi%22%2C%22last_name%22%3A%22Iwakiri%22%2C%22username%22%3A%22takeumanorekishi%22%2C%22language_code%22%3A%22ja%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1716881860&hash=8de916426cd095d4cf1c4bdaaca39e9dd96c6757492f86cf4a99167ca43ae84d";
-        setInitData(
-          initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
-        );
+      // if (typeof window !== "undefined" && isAuthConnected == false) {
+      //   const initDataFromTelegram = WebApp.initData;
+      if (isAuthConnected == false) {
+        const initDataFromTelegram =
+          "query_id=AAEw7NkaAwAAADDs2Rq3VOfw&user=%7B%22id%22%3A6892940336%2C%22first_name%22%3A%22Atsushi%22%2C%22last_name%22%3A%22Iwakiri%22%2C%22username%22%3A%22takeumanorekishi%22%2C%22language_code%22%3A%22ja%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1716881860&hash=8de916426cd095d4cf1c4bdaaca39e9dd96c6757492f86cf4a99167ca43ae84d";
+        // setInitData(
+        //   initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
+        // );
         await firebaseAuthConnect(
           initDataFromTelegram,
           setCustomToken,
