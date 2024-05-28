@@ -29,17 +29,16 @@ export default function Home() {
     (async () => {
       if (typeof window !== "undefined" && isAuthConnected == false) {
         let initDataFromTelegram = WebApp.initData;
-        setInitData(
-          initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
-        );
         console.log(getEnv());
         if (getEnv() == "dev") {
           initDataFromTelegram = initDataMock;
         }
-          
-          await firebaseAuthConnect(initDataFromTelegram).then((result) => {
-            setIsAuthConnected(result);
-          });
+        setInitData(
+          initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
+        );
+        await firebaseAuthConnect(initDataFromTelegram).then((result) => {
+          setIsAuthConnected(result);
+        });
       }
     })();
   }, []);
