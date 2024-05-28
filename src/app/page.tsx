@@ -10,7 +10,7 @@ import { useFirestore } from "@/app/hooks/useFirestore";
 import { useDateFormatter } from "@/app/hooks/useDateFormatter";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
-import { useAuthConnect } from "@/app/hooks/useAuthConnect";
+import { configInterface, useAuthConnect } from "@/app/hooks/useAuthConnect";
 
 export default function Home() {
   const router = useRouter();
@@ -22,17 +22,24 @@ export default function Home() {
   const [initData, setInitData] = useState<string>("initialdata");
   const [customToken, setCustomToken] = useState<string>("init");
   const [userData, setUserData] = useState<string>("init");
+  const [envConfig, setEnvConfig] = useState<configInterface>();
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
       if (typeof window !== "undefined" && isAuthConnected == false) {
         const initDataFromTelegram = WebApp.initData;
-        setInitData(initDataFromTelegram != "" ? initDataFromTelegram : "blankData");
+      // if (isAuthConnected == false) {
+      //   const initDataFromTelegram =
+      //     "query_id=AAEw7NkaAwAAADDs2Rq3VOfw&user=%7B%22id%22%3A6892940336%2C%22first_name%22%3A%22Atsushi%22%2C%22last_name%22%3A%22Iwakiri%22%2C%22username%22%3A%22takeumanorekishi%22%2C%22language_code%22%3A%22ja%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1716881860&hash=8de916426cd095d4cf1c4bdaaca39e9dd96c6757492f86cf4a99167ca43ae84d";
+        setInitData(
+          initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
+        );
         await firebaseAuthConnect(
           initDataFromTelegram,
           setCustomToken,
-          setUserData
+          setUserData,
+          setEnvConfig
         ).then((result) => {
           setIsAuthConnected(result);
         });
@@ -80,6 +87,13 @@ export default function Home() {
       <text color="white">customToken: {customToken}</text>
       <text color="white">isAuthConnected: {String(isAuthConnected)}</text>
       <text color="white">userData: {userData}</text>
+      <text color="white">
+        apiKey: {envConfig?.apiKey}, authDomain: {envConfig?.authDomain},
+        projectId: {envConfig?.projectId}, storageBucket:{" "}
+        {envConfig?.storageBucket}, messagingSenderId:{" "}
+        {envConfig?.messagingSenderId}, appId: {envConfig?.appId},
+        measurementId: {envConfig?.measurementId}
+      </text>
       <TonConnectButton />
     </main>
   );

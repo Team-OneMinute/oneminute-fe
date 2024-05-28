@@ -2,14 +2,25 @@ import { firebaseConfig } from "@/app/config/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
 
+export type configInterface = {
+  apiKey: string | undefined;
+  authDomain: string | undefined;
+  projectId: string | undefined;
+  storageBucket: string | undefined;
+  messagingSenderId: string | undefined;
+  appId: string | undefined;
+  measurementId: string | undefined;
+};
+
 export function useAuthConnect() {
   return {
     firebaseAuthConnect: async (
       initData: string,
       setCustomToken: (customToken: string) => void,
-      setUserData: (userData: string) => void
+      setUserData: (userData: string) => void,
+      setEnvConfig: (config: configInterface) => void
     ) => {
-      const auth = fireStoreInitialized();
+      const auth = fireStoreInitialized(setEnvConfig);
       const decodedInitData = decodeURIComponent(initData);
       console.log("decodedInitData", decodedInitData);
 
@@ -65,7 +76,11 @@ export function useAuthConnect() {
   };
 }
 
-const fireStoreInitialized = () => {
+const fireStoreInitialized = (
+  setEnvConfig: (config: configInterface) => void
+) => {
+  console.log(firebaseConfig);
+  setEnvConfig(firebaseConfig);
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   return auth;
