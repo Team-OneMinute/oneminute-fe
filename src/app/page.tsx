@@ -16,7 +16,7 @@ export default function Home() {
   const { getEnv } = useEnv();
   const { goto } = usePageNavigate();
   const { startGame } = useGameStart();
-  const { connected, sender, isSent, transactionResponse } = useTonConnect();
+  const { connected } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
