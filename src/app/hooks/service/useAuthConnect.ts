@@ -1,6 +1,4 @@
-import { firebaseConfig } from "@/app/config/firebaseConfig";
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithCustomToken } from "firebase/auth";
+import { signInWithCustomToken } from "firebase/auth";
 import { useFetch } from "@/app/hooks/infrastructure/useFetch";
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 
