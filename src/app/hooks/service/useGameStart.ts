@@ -11,22 +11,24 @@ export function useGameStart() {
 
   return {
     startGame: () => {
+      console.log("game start!!");
       const auth = authInit();
 
       // TODO: move use hooks
       if (!auth) return;
       if (auth.currentUser == null) return;
 
-      let uid;
-      auth.currentUser
-        .getIdToken(true)
-        .then(function (idToken) {
-          console.log(idToken);
-          uid = idToken;
-        })
-        .catch(function (error) {
-          throw new Error("get firebase auth id token failed", error);
-        });
+
+      // auth.currentUser
+      //   .getIdToken(true)
+      //   .then(function (idToken) {
+      //     console.log(idToken);
+      //     uid = idToken;
+      //   })
+      //   .catch(function (error) {
+      //     throw new Error("get firebase auth id token failed", error);
+      //   });
+      const uid = auth.currentUser.uid;
 
       // step: set transaction
       const collectionName = "0001_transaction";
