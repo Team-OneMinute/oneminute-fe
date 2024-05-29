@@ -16,7 +16,7 @@ export default function Home() {
   const { getEnv } = useEnv();
   const { goto } = usePageNavigate();
   const { startGame } = useGameStart();
-  const { connected, sender, isSent, transactionResponse } = useTonConnect();
+  const { connected } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
 
@@ -54,7 +54,7 @@ export default function Home() {
         <Button
           variant="contained"
           sx={{ width: "45%" }}
-          onClick={() => goto("/game")}
+          onClick={() => goto("gameeeeee")}
         >
           Free
         </Button>
@@ -71,7 +71,7 @@ export default function Home() {
       <Button
         variant="contained"
         sx={{ width: "100%" }}
-        onClick={() => goto("/login")}
+        onClick={() => goto("login")}
       >
         telegram login
       </Button>
