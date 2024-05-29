@@ -54,7 +54,7 @@ export default function Home() {
         <Button
           variant="contained"
           sx={{ width: "45%" }}
-          onClick={() => goto("gameeeeee")}
+          onClick={() => goto("game")}
         >
           Free
         </Button>
