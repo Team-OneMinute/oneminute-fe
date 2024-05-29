@@ -1,26 +1,21 @@
 "use client";
-import Image from "next/image";
 import styles from "./page.module.css";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import { Box, Button, Typography } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useOneMinuteContract } from "@/app/hooks/useOneMinuteContract";
-import { useTonConnect } from "@/app/hooks/useTonConnect";
-import { useFirestore } from "@/app/hooks/useFirestore";
-import { useDateFormatter } from "@/app/hooks/useDateFormatter";
+import { useTonConnect } from "@/app/hooks/service/useTonConnect";
 import WebApp from "@twa-dev/sdk";
 import { useEffect, useState } from "react";
-import { useAuthConnect } from "@/app/hooks/useAuthConnect";
-import { useEnv } from "./hooks/useEnv";
-import { initDataMock } from "@/app/mock/telegramInitData"
+import { useAuthConnect } from "@/app/hooks/service/useAuthConnect";
+import { useEnv } from "./hooks/util/useEnv";
+import { initDataMock } from "@/app/mock/telegramInitData";
+import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
+import { useGameStart } from "./hooks/service/useGameStart";
 
 export default function Home() {
-  const router = useRouter();
-  const { sendBet } = useOneMinuteContract();
-  const { addDocument } = useFirestore();
-  const { dateFormat } = useDateFormatter();
   const { firebaseAuthConnect } = useAuthConnect();
   const { getEnv } = useEnv();
+  const { goto } = usePageNavigate();
+  const { startGame } = useGameStart();
   const { connected, sender, isSent, transactionResponse } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
@@ -29,6 +24,7 @@ export default function Home() {
     (async () => {
       if (typeof window !== "undefined" && isAuthConnected == false) {
         let initDataFromTelegram = WebApp.initData;
+        console.log("env");
         console.log(getEnv());
         if (getEnv() == "dev") {
           initDataFromTelegram = initDataMock;
@@ -58,7 +54,7 @@ export default function Home() {
         <Button
           variant="contained"
           sx={{ width: "45%" }}
-          onClick={() => router.push("/game")}
+          onClick={() => goto("/game")}
         >
           Free
         </Button>
@@ -66,7 +62,7 @@ export default function Home() {
           <Button
             variant="contained"
             sx={{ width: "45%" }}
-            onClick={() => router.push("/game")}
+            onClick={() => startGame()}
           >
             main
           </Button>
@@ -75,7 +71,7 @@ export default function Home() {
       <Button
         variant="contained"
         sx={{ width: "100%" }}
-        onClick={() => router.push("/login")}
+        onClick={() => goto("/login")}
       >
         telegram login
       </Button>
