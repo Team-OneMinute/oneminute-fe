@@ -1,14 +1,11 @@
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
-import { useDateFormatter } from "@/app/hooks/util/useDateFormatter";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { serverTimestamp } from "firebase/firestore";
-
 
 export function useGameStart() {
   const { authInit } = useAuthInit();
   const { addDocument } = useFirestore();
-  const { dateFormat } = useDateFormatter();
   const { goto } = usePageNavigate();
 
   return {
