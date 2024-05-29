@@ -6,7 +6,7 @@ import { usePageNavigate } from "../../hooks/util/usePageNavigate";
 
 const push = jest.fn();
 jest.mock("next/navigation", () => {
-  const router = jest.requireActual("next/router");
+  const router = jest.requireActual("next/navigation");
   return {
     ...router,
     useRouter: () => {

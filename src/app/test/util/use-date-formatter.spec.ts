@@ -40,7 +40,6 @@ describe("useDateFormatter", () => {
   test("request data fraud", () => {
     // bad data
     const date = new Date(2023);
-    console.log(date);
     const { result } = renderHook(() => dateFormat(date, "YYYYYYYYY"));
 
     // linux start date
