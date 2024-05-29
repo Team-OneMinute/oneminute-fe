@@ -1,6 +1,4 @@
-import { firebaseConfig } from "@/app/config/firebaseConfig";
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithCustomToken } from "firebase/auth";
+import { signInWithCustomToken } from "firebase/auth";
 import { useFetch } from "@/app/hooks/infrastructure/useFetch";
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 
@@ -11,7 +9,7 @@ export function useAuthConnect() {
   return {
     firebaseAuthConnect: async (initData: string) => {
       const auth = authInit();
-      console.log(initData);
+      console.log("initData", initData);
       const decodedInitData = decodeURIComponent(initData);
       //console.log("decodedInitData", decodedInitData);
 

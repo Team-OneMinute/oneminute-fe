@@ -1,12 +1,11 @@
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
-import { useDateFormatter } from "@/app/hooks/util/useDateFormatter";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
+import { serverTimestamp } from "firebase/firestore";
 
 export function useGameStart() {
   const { authInit } = useAuthInit();
   const { addDocument } = useFirestore();
-  const { dateFormat } = useDateFormatter();
   const { goto } = usePageNavigate();
 
   return {
@@ -20,9 +19,9 @@ export function useGameStart() {
       const collectionName = "0001_transaction";
       const documentData = {
         uid: uid,
-        created_at: dateFormat(new Date()),
+        created_at: serverTimestamp(),
         cheat_check_flag: 0,
-        bet_flg: 0
+        bet_flg: 0,
       };
       addDocument(collectionName, documentData).then(function (result) {
         if (result) {
