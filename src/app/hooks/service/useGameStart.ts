@@ -11,23 +11,9 @@ export function useGameStart() {
 
   return {
     startGame: () => {
-      console.log("game start!!");
       const auth = authInit();
-
-      // TODO: move use hooks
       if (!auth) return;
       if (auth.currentUser == null) return;
-
-
-      // auth.currentUser
-      //   .getIdToken(true)
-      //   .then(function (idToken) {
-      //     console.log(idToken);
-      //     uid = idToken;
-      //   })
-      //   .catch(function (error) {
-      //     throw new Error("get firebase auth id token failed", error);
-      //   });
       const uid = auth.currentUser.uid;
 
       // step: set transaction
@@ -35,6 +21,8 @@ export function useGameStart() {
       const documentData = {
         uid: uid,
         created_at: dateFormat(new Date()),
+        cheat_check_flag: 0,
+        bet_flg: 0
       };
       addDocument(collectionName, documentData).then(function (result) {
         if (result) {
