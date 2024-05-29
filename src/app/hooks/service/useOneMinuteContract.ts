@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { OneMinuteContract } from "@/app/contracts/OneMinuteContract";
-import { useTonClient } from "@/app/hooks//useTonClient";
-import { useAsyncInitialize } from "@/app/hooks//useAsyncInitialize";
+import { useTonClient } from "@/app/hooks/infrastructure/useTonClient";
+import { useAsyncInitialize } from "@/app/hooks/infrastructure/useAsyncInitialize";
 import { Address, OpenedContract, toNano } from "@ton/core";
 import { useTonConnect } from "./useTonConnect";
 
@@ -29,10 +29,10 @@ export function useOneMinuteContract() {
 
   useEffect(() => {
     async function getValue() {
-        if (!oneMinuteContract) return;
+      if (!oneMinuteContract) return;
       setContractData(null);
-        const balance = await oneMinuteContract.getBalance();
-        const owner = await oneMinuteContract.getOwner();
+      const balance = await oneMinuteContract.getBalance();
+      const owner = await oneMinuteContract.getOwner();
       setContractData({
         owner_address: owner,
       });
@@ -48,13 +48,13 @@ export function useOneMinuteContract() {
     contract_balance: balance,
     ...contractData,
     sendBet: async () => {
-        return oneMinuteContract?.send(
-          sender,
-          {
-            value: toNano("0.1"),
-          },
-          "Bet",
-        );
+      return oneMinuteContract?.send(
+        sender,
+        {
+          value: toNano("0.1"),
+        },
+        "Bet"
+      );
     },
   };
 }

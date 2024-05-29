@@ -1,16 +1,19 @@
 import { firebaseConfig } from "@/app/config/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
-import { useFetch } from "@/app/hooks/useFetch";
+import { useFetch } from "@/app/hooks/infrastructure/useFetch";
+import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 
 export function useAuthConnect() {
   const { get } = useFetch("stg");
+  const { authInit } = useAuthInit();
 
   return {
     firebaseAuthConnect: async (initData: string) => {
-      const auth = fireStoreInitialized();
+      const auth = authInit();
+      console.log(initData);
       const decodedInitData = decodeURIComponent(initData);
-      console.log("decodedInitData", decodedInitData);
+      //console.log("decodedInitData", decodedInitData);
 
       // Step 2: リクエストパラメータを配列に格納
       const paramsArray = decodedInitData.split("&").map((param) => {
@@ -50,9 +53,3 @@ export function useAuthConnect() {
     },
   };
 }
-
-const fireStoreInitialized = () => {
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  return auth;
-};
