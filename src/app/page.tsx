@@ -27,7 +27,7 @@ export default function Home() {
         console.log("env");
         console.log(getEnv());
         if (getEnv() == "dev") {
-          initDataFromTelegram = initDataMock;
+          initDataFromTelegram = initDataMock[9];
         }
         setInitData(
           initDataFromTelegram != "" ? initDataFromTelegram : "blankData"

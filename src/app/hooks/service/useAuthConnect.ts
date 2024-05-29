@@ -11,7 +11,7 @@ export function useAuthConnect() {
   return {
     firebaseAuthConnect: async (initData: string) => {
       const auth = authInit();
-      console.log(initData);
+      console.log("initData", initData);
       const decodedInitData = decodeURIComponent(initData);
       //console.log("decodedInitData", decodedInitData);
 
