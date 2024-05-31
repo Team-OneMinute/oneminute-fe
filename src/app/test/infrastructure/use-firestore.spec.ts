@@ -4,7 +4,20 @@
 import { renderHook, act } from "@testing-library/react";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 import { initializeApp } from "firebase/app";
-import { collection, getFirestore, getDocs, where, query, CollectionReference, Firestore, QueryFieldFilterConstraint, Query } from "firebase/firestore";
+import {
+  collection,
+  getFirestore,
+  getDocs,
+  where,
+  query,
+  CollectionReference,
+  Firestore,
+  QueryFieldFilterConstraint,
+  Query,
+  getDoc,
+  doc,
+  DocumentReference,
+} from "firebase/firestore";
 
 jest.mock("firebase/app", () => ({
   initializeApp: jest.fn(),
@@ -17,6 +30,8 @@ jest.mock("firebase/firestore", () => ({
   query: jest.fn(),
   where: jest.fn(),
   getDocs: jest.fn(),
+  getDoc: jest.fn(),
+  doc: jest.fn(),
 }));
 
 describe("useFirestore", () => {
@@ -69,6 +84,30 @@ describe("useFirestore", () => {
       expect(where).toHaveBeenCalledWith("key2", ">", "value2");
       expect(query).toHaveBeenCalledWith(mockCollection, mockWhere, mockWhere);
       expect(getDocs).toHaveBeenCalledWith(mockQuery);
+    });
+  });
+
+  describe("getDocumenByDocNo", () => {
+    const mockFirestore = {} as Firestore;
+    const mockDoc = {} as DocumentReference;
+    const mockGetDoc = {
+      data: () => ({ key1: "value1" }),
+    };
+
+    beforeEach(() => {
+      (initializeApp as jest.Mock).mockReturnValue({});
+      (getFirestore as jest.Mock).mockReturnValue(mockFirestore);
+      (doc as jest.Mock).mockReturnValue(mockDoc);
+      (getDoc as jest.Mock).mockResolvedValue(mockGetDoc);
+    });
+
+    test("success getDocumentByDocNo", async () => {
+      const { getDocumentByDocNo } = useFirestore();
+
+      await getDocumentByDocNo("testCollection", "test-uid");
+
+      expect(doc).toHaveBeenCalledWith(mockFirestore, "testCollection", "test-uid");
+      expect(getDoc).toHaveBeenCalledWith(mockDoc);
     });
   });
 });

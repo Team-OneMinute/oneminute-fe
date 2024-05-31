@@ -23,12 +23,12 @@ describe("useUserInitialize", () => {
   });
 
   test("success test", async () => {
-    const mockGetDocument = jest.fn().mockResolvedValue([]);
+    const mockGetDocumentByDocNo = jest.fn().mockResolvedValue(undefined);
     const mockPost = jest.fn().mockResolvedValue({
       status: 200,
     });
 
-    mockUseFirestore.mockReturnValue({ getDocument: mockGetDocument });
+    mockUseFirestore.mockReturnValue({ getDocumentByDocNo: mockGetDocumentByDocNo });
     mockUseFetchBE.mockReturnValue({ post: mockPost });
 
     const { result } = renderHook(() => useUserInitialize());
@@ -39,21 +39,21 @@ describe("useUserInitialize", () => {
       );
     });
 
-    expect(mockGetDocument).toHaveBeenCalledWith("users", ["uid == test-uid"]);
+    expect(mockGetDocumentByDocNo).toHaveBeenCalledWith("users", "test-uid");
     expect(mockPost).toHaveBeenCalledWith("/initializeUserData", {
       uid: "test-uid",
     });
   });
 
   test("should handle already exist user", async () => {
-    const mockGetDocument = jest
+    const mockGetDocumentByDocNo = jest
       .fn()
-      .mockResolvedValue([{ uid: "test-user", life: 0 }]);
+      .mockResolvedValue({ uid: "test-user", life: 0 });
     const mockPost = jest.fn().mockResolvedValue({
       status: 201,
     });
 
-    mockUseFirestore.mockReturnValue({ getDocument: mockGetDocument });
+    mockUseFirestore.mockReturnValue({ getDocumentByDocNo: mockGetDocumentByDocNo });
     mockUseFetchBE.mockReturnValue({ post: mockPost });
 
     const { result } = renderHook(() => useUserInitialize());
@@ -62,7 +62,7 @@ describe("useUserInitialize", () => {
       await result.current.userInitialize("test-uid");
     });
 
-    expect(mockGetDocument).toHaveBeenCalledWith("users", ["uid == test-uid"]);
+    expect(mockGetDocumentByDocNo).toHaveBeenCalledWith("users", "test-uid");
     expect(mockPost).toHaveBeenCalledTimes(0);
   });
 });

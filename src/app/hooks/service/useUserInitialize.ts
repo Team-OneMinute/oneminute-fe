@@ -4,14 +4,14 @@ import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 
 export function useUserInitialize() {
   const { post } = useFetchBE();
-  const { getDocument } = useFirestore();
+  const { getDocumentByDocNo } = useFirestore();
 
   return {
     userInitialize: async (uid: string) => {
       // get "users" collection data by uid
-      const userData = await getDocument("users", [`uid == ${uid}`]);
+      const userData = await getDocumentByDocNo("users", uid);
       console.log("userData", userData);
-      if (userData.length > 0) {
+      if (userData != undefined) {
         console.log("userData is exists.");
         return;
       }
