@@ -34,11 +34,10 @@ export default function Home() {
         setInitData(
           initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
         );
-        const uid = await firebaseAuthConnect(initDataFromTelegram).then((result) => {
+        await firebaseAuthConnect(initDataFromTelegram).then(async (result) => {
           setIsAuthConnected(result != "");
-          return result;
+          await userInitialize(result);
         });
-        await userInitialize(uid);
       }
     })();
   }, []);
