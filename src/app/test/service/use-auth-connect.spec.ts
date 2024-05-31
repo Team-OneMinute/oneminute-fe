@@ -3,11 +3,11 @@
  */
 import { renderHook, act, fireEvent, waitFor } from "@testing-library/react";
 import { useAuthConnect } from "@/app/hooks/service/useAuthConnect";
-import { useFetch } from "@/app/hooks/infrastructure/useFetch";
+import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { signInWithCustomToken } from "firebase/auth";
 
-jest.mock("@/app/hooks/infrastructure/useFetch", () => ({
+jest.mock("@/app/hooks/infrastructure/useFetchBE", () => ({
   useFetch: jest.fn(),
 }));
 
@@ -19,7 +19,7 @@ jest.mock("firebase/auth", () => ({
   signInWithCustomToken: jest.fn(),
 }));
 
-const mockUseFetch = useFetch as jest.Mock;
+const mockUseFetchBE = useFetchBE as jest.Mock;
 const mockUseAuthInit = useAuthInit as jest.Mock;
 const mockSignInWithCustomToken = signInWithCustomToken as jest.Mock;
 
@@ -34,7 +34,7 @@ describe("useAuthConnect", () => {
     });
     const mockAuth = { currentUser: { uid: "test-uid" } };
 
-    mockUseFetch.mockReturnValue({ get: mockGet });
+    mockUseFetchBE.mockReturnValue({ get: mockGet });
     mockUseAuthInit.mockReturnValue({ authInit: () => mockAuth });
     mockSignInWithCustomToken.mockResolvedValue({ user: { uid: "test-uid" } });
 
@@ -63,7 +63,7 @@ describe("useAuthConnect", () => {
     });
     const mockAuth = { currentUser: { uid: "test-uid" } };
 
-    mockUseFetch.mockReturnValue({ get: mockGet });
+    mockUseFetchBE.mockReturnValue({ get: mockGet });
     mockUseAuthInit.mockReturnValue({ authInit: () => mockAuth });
     mockSignInWithCustomToken.mockRejectedValue(new Error("Mock error"));
 

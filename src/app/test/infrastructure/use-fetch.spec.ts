@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { renderHook, act } from "@testing-library/react";
-import { useFetch } from "../../hooks/infrastructure/useFetch";
+import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
 
 global.fetch = jest.fn(() =>
   Promise.resolve({
@@ -20,7 +20,7 @@ describe("useFetch", () => {
       json: () => Promise.resolve({}),
     });
 
-    const { result } = renderHook(() => useFetch("dev"));
+    const { result } = renderHook(() => useFetchBE("dev"));
 
     const uri = "/test-endpoint";
     const params = "param1=value1&param2=value2";
@@ -42,7 +42,7 @@ describe("useFetch", () => {
       json: () => Promise.resolve({}),
     });
 
-    const { result } = renderHook(() => useFetch("dev"));
+    const { result } = renderHook(() => useFetchBE("dev"));
 
     const uri = "/test-endpoint";
     // const params = "param1=value1&param2=value2";
@@ -69,7 +69,7 @@ describe("useFetch", () => {
       json: () => Promise.resolve({}),
     });
 
-    const { result } = renderHook(() => useFetch("stg"));
+    const { result } = renderHook(() => useFetchBE("stg"));
 
     const uri = "/test-endpoint";
     const params = "param1=value1&param2=value2";
@@ -91,7 +91,7 @@ describe("useFetch", () => {
       json: () => Promise.resolve({}),
     });
 
-    const { result } = renderHook(() => useFetch("stg"));
+    const { result } = renderHook(() => useFetchBE("stg"));
 
     const uri = "/test-endpoint";
     const params = {
@@ -117,7 +117,7 @@ describe("useFetch", () => {
     //   json: () => Promise.resolve({}),
     // });
 
-    // const { result } = renderHook(() => useFetch("dev"));
+    // const { result } = renderHook(() => useFetchBE("dev"));
 
     // const uri = "/test-endpoint";
     // const params = "param1=value1&param2=value2";

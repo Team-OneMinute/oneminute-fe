@@ -1,6 +1,6 @@
 type envType = "dev" | "stg" | "prod";
 
-export function useFetch(env: envType) {
+export function useFetchBE(env: envType) {
   return {
     get: async (uri: string, params: string) => {
       const fetchUrl = getFetchUrl(env, uri);

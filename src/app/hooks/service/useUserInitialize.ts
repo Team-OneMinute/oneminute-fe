@@ -1,9 +1,9 @@
 import { INITIALIZE_USER_DATA } from "@/app/const/endpoints";
-import { useFetch } from "@/app/hooks/infrastructure/useFetch";
+import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 
 export function useUserInitialize() {
-  const { post } = useFetch("stg");
+  const { post } = useFetchBE("stg");
   const { getDocument } = useFirestore();
 
   return {

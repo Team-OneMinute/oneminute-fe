@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { useFetch } from "@/app/hooks/infrastructure/useFetch";
+import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 import { useUserInitialize } from "@/app/hooks/service/useUserInitialize";
 import { act, renderHook } from "@testing-library/react";
@@ -15,7 +15,7 @@ jest.mock("@/app/hooks/infrastructure/useFetch", () => ({
 }));
 
 const mockUseFirestore = useFirestore as jest.Mock;
-const mockUseFetch = useFetch as jest.Mock;
+const mockUseFetchBE = useFetchBE as jest.Mock;
 
 describe("useUserInitialize", () => {
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe("useUserInitialize", () => {
     });
 
     mockUseFirestore.mockReturnValue({ getDocument: mockGetDocument });
-    mockUseFetch.mockReturnValue({ post: mockPost });
+    mockUseFetchBE.mockReturnValue({ post: mockPost });
 
     const { result } = renderHook(() => useUserInitialize());
 
@@ -54,7 +54,7 @@ describe("useUserInitialize", () => {
     });
 
     mockUseFirestore.mockReturnValue({ getDocument: mockGetDocument });
-    mockUseFetch.mockReturnValue({ post: mockPost });
+    mockUseFetchBE.mockReturnValue({ post: mockPost });
 
     const { result } = renderHook(() => useUserInitialize());
 

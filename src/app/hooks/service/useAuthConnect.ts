@@ -1,10 +1,10 @@
 import { signInWithCustomToken } from "firebase/auth";
-import { useFetch } from "@/app/hooks/infrastructure/useFetch";
+import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { TELEGRAM_AUTH } from "@/app/const/endpoints";
 
 export function useAuthConnect() {
-  const { get } = useFetch("stg");
+  const { get } = useFetchBE("stg");
   const { authInit } = useAuthInit();
 
   return {
