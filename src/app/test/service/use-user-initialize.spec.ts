@@ -10,8 +10,8 @@ jest.mock("@/app/hooks/infrastructure/useFirestore", () => ({
   useFirestore: jest.fn(),
 }));
 
-jest.mock("@/app/hooks/infrastructure/useFetch", () => ({
-  useFetch: jest.fn(),
+jest.mock("@/app/hooks/infrastructure/useFetchBE", () => ({
+  useFetchBE: jest.fn(),
 }));
 
 const mockUseFirestore = useFirestore as jest.Mock;

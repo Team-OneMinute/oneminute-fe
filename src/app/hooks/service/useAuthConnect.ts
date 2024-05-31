@@ -4,7 +4,7 @@ import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { TELEGRAM_AUTH } from "@/app/const/endpoints";
 
 export function useAuthConnect() {
-  const { get } = useFetchBE("stg");
+  const { get } = useFetchBE();
   const { authInit } = useAuthInit();
 
   return {

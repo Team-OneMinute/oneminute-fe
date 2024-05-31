@@ -3,7 +3,7 @@ import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 
 export function useUserInitialize() {
-  const { post } = useFetchBE("stg");
+  const { post } = useFetchBE();
   const { getDocument } = useFirestore();
 
   return {

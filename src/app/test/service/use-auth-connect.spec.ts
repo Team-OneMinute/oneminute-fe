@@ -8,7 +8,7 @@ import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { signInWithCustomToken } from "firebase/auth";
 
 jest.mock("@/app/hooks/infrastructure/useFetchBE", () => ({
-  useFetch: jest.fn(),
+  useFetchBE: jest.fn(),
 }));
 
 jest.mock("@/app/hooks/infrastructure/useAuthInit", () => ({

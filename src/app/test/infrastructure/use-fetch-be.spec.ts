@@ -3,6 +3,9 @@
  */
 import { renderHook, act } from "@testing-library/react";
 import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
+import { setupEnv } from "@/app/test/setupEnv";
+
+setupEnv();
 
 global.fetch = jest.fn(() =>
   Promise.resolve({
@@ -15,36 +18,36 @@ describe("useFetch", () => {
     (global.fetch as jest.Mock).mockClear();
   });
 
-  test("fetch get in dev", async () => {
+  test("fetch get", async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       json: () => Promise.resolve({}),
     });
 
-    const { result } = renderHook(() => useFetchBE("dev"));
+    const { result } = renderHook(() => useFetchBE());
 
-    const uri = "/test-endpoint";
+    const endPoint = "/test-endpoint";
     const params = "param1=value1&param2=value2";
 
     await act(async () => {
-      await result.current.get(uri, params);
+      await result.current.get(endPoint, params);
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      "http://127.0.0.1:5001/oneminute-88837/us-central1/test-endpoint?param1=value1&param2=value2",
+      "https://testUrl.com/test-endpoint?param1=value1&param2=value2",
       {
         method: "GET",
       }
     );
   });
 
-  test("fetch post in dev", async () => {
+  test("fetch post", async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       json: () => Promise.resolve({}),
     });
 
-    const { result } = renderHook(() => useFetchBE("dev"));
+    const { result } = renderHook(() => useFetchBE());
 
-    const uri = "/test-endpoint";
+    const endPoint = "/test-endpoint";
     // const params = "param1=value1&param2=value2";
     const params = {
       param1: "value1",
@@ -52,112 +55,15 @@ describe("useFetch", () => {
     };
 
     await act(async () => {
-      await result.current.post(uri, params);
+      await result.current.post(endPoint, params);
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      "http://127.0.0.1:5001/oneminute-88837/us-central1/test-endpoint",
+      "https://testUrl.com/test-endpoint",
       {
         method: "POST",
         body: '{"param1":"value1","param2":"value2"}',
       }
     );
-  });
-
-  test("fetch get in stg", async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve({}),
-    });
-
-    const { result } = renderHook(() => useFetchBE("stg"));
-
-    const uri = "/test-endpoint";
-    const params = "param1=value1&param2=value2";
-
-    await act(async () => {
-      await result.current.get(uri, params);
-    });
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      "https://us-central1-oneminute-88837.cloudfunctions.net/test-endpoint?param1=value1&param2=value2",
-      {
-        method: "GET",
-      }
-    );
-  });
-
-  test("fetch post in stg", async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve({}),
-    });
-
-    const { result } = renderHook(() => useFetchBE("stg"));
-
-    const uri = "/test-endpoint";
-    const params = {
-      param1: "value1",
-      param2: "value2",
-    };
-
-    await act(async () => {
-      await result.current.post(uri, params);
-    });
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      "https://us-central1-oneminute-88837.cloudfunctions.net/test-endpoint",
-      {
-        method: "POST",
-        body: '{"param1":"value1","param2":"value2"}',
-      }
-    );
-  });
-
-  test("fetch get in prod", async () => {
-    // (global.fetch as jest.Mock).mockResolvedValueOnce({
-    //   json: () => Promise.resolve({}),
-    // });
-
-    // const { result } = renderHook(() => useFetchBE("dev"));
-
-    // const uri = "/test-endpoint";
-    // const params = "param1=value1&param2=value2";
-
-    // await act(async () => {
-    //   await result.current.get(uri, params);
-    // });
-
-    // expect(global.fetch).toHaveBeenCalledWith(
-    //   "http://127.0.0.1:5001/oneminute-88837/us-central1/test-endpoint?param1=value1&param2=value2",
-    //   {
-    //     method: "GET",
-    //   }
-    // );
-  });
-
-test("fetch post in prod", async () => {
-    // (global.fetch as jest.Mock).mockResolvedValueOnce({
-    //   json: () => Promise.resolve({}),
-    // });
-
-    // const { result } = renderHook(() => useFetch("dev"));
-
-    // const uri = "/test-endpoint";
-    // // const params = "param1=value1&param2=value2";
-    // const params = {
-    //   param1: "value1",
-    //   param2: "value2",
-    // };
-
-    // await act(async () => {
-    //   await result.current.post(uri, params);
-    // });
-
-    // expect(global.fetch).toHaveBeenCalledWith(
-    //   "http://127.0.0.1:5001/oneminute-88837/us-central1/test-endpoint",
-    //   {
-    //     method: "POST",
-    //     body: '{"param1":"value1","param2":"value2"}',
-    //   }
-    // );
   });
 });

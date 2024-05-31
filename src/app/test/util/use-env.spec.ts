@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { renderHook } from "@testing-library/react";
-import { setupEnv } from "../setupEnv"; 
+import { setupEnv } from "../setupEnv";
 import { useEnv } from "../../hooks/util/useEnv";
 
 setupEnv();
