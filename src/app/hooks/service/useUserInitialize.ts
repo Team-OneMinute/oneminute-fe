@@ -1,3 +1,4 @@
+import { INITIALIZE_USER_DATA } from "@/app/const/endpoints";
 import { useFetch } from "@/app/hooks/infrastructure/useFetch";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 
@@ -17,7 +18,7 @@ export function useUserInitialize() {
       const params = {
         uid: uid,
       };
-      await post("/initializeUserData", params).then((response) => {
+      await post(INITIALIZE_USER_DATA, params).then((response) => {
         console.log(response);
       });
     },

@@ -1,6 +1,7 @@
 import { signInWithCustomToken } from "firebase/auth";
 import { useFetch } from "@/app/hooks/infrastructure/useFetch";
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
+import { TELEGRAM_AUTH } from "@/app/const/endpoints";
 
 export function useAuthConnect() {
   const { get } = useFetch("stg");
@@ -32,7 +33,7 @@ export function useAuthConnect() {
         query: requestParam,
       });
       console.log("request_query", request_query);
-      const response = await get("/telegramAuth", requestParam);
+      const response = await get(TELEGRAM_AUTH, requestParam);
 
       // Step5:Firebase auth connect
       return await response.json().then(async (value) => {
