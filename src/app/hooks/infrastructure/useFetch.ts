@@ -10,8 +10,14 @@ export function useFetch(env: envType) {
         method: "GET",
       });
     },
-    post: async () => {
+    post: async (uri: string, params: { [key: string]: string }) => {
       // TODO: post request
+      const fetchUrl = getFetchUrl(env, uri);
+
+      return await fetch(fetchUrl, {
+        method: "POST",
+        body: JSON.stringify(params),
+      })
     },
   };
 }

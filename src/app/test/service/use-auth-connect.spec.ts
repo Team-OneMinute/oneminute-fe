@@ -41,10 +41,10 @@ describe("useAuthConnect", () => {
     const { result } = renderHook(() => useAuthConnect());
 
     await act(async () => {
-      const success = await result.current.firebaseAuthConnect(
+      const resultUid = await result.current.firebaseAuthConnect(
         "key1=value1&key2=value2"
       );
-      expect(success).toBe(true);
+      expect(resultUid).toBe("test-uid");
     });
 
     expect(mockGet).toHaveBeenCalledWith(
@@ -57,55 +57,52 @@ describe("useAuthConnect", () => {
     );
   });
 
-    test("should handle error in Firebase auth connection", async () => {
-      const mockGet = jest.fn().mockResolvedValue({
-        json: jest.fn().mockResolvedValue({ token: "mock-custom-token" }),
-      });
-      const mockAuth = { currentUser: { uid: "test-uid" } };
+  test("should handle error in Firebase auth connection", async () => {
+    const mockGet = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ token: "mock-custom-token" }),
+    });
+    const mockAuth = { currentUser: { uid: "test-uid" } };
 
-      mockUseFetch.mockReturnValue({ get: mockGet });
-      mockUseAuthInit.mockReturnValue({ authInit: () => mockAuth });
-      mockSignInWithCustomToken.mockRejectedValue(new Error("Mock error"));
+    mockUseFetch.mockReturnValue({ get: mockGet });
+    mockUseAuthInit.mockReturnValue({ authInit: () => mockAuth });
+    mockSignInWithCustomToken.mockRejectedValue(new Error("Mock error"));
 
-      // console.errorをモックしてエラーログの出力を抑制
-      const consoleErrorMock = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+    // console.errorをモックしてエラーログの出力を抑制
+    const consoleErrorMock = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
-      const { result } = renderHook(() => useAuthConnect());
+    const { result } = renderHook(() => useAuthConnect());
 
-      await act(async () => {
-        const success = await result.current.firebaseAuthConnect(
-          "key1=value1&key2=value2"
-        );
-        expect(success).toBe(false);
-      });
-
-      expect(mockGet).toHaveBeenCalledWith(
-        "/telegramAuth",
+    await act(async () => {
+      const resultUid = await result.current.firebaseAuthConnect(
         "key1=value1&key2=value2"
       );
-      expect(mockSignInWithCustomToken).toHaveBeenCalledWith(
-        mockAuth,
-        "mock-custom-token"
-      );
-
-      // テスト終了後にconsole.errorのモックを解除
-      consoleErrorMock.mockRestore();
+      expect(resultUid).toBe("");
     });
-  
-    test("should handle missing auth instance", async () => {
-      // mockUseAuthInit.mockReturnValue({ authInit: () => null });
 
-      // const { result } = renderHook(() => useAuthConnect());
+    expect(mockGet).toHaveBeenCalledWith(
+      "/telegramAuth",
+      "key1=value1&key2=value2"
+    );
+    expect(mockSignInWithCustomToken).toHaveBeenCalledWith(
+      mockAuth,
+      "mock-custom-token"
+    );
 
-      // await act(async () => {
-      //   const success = await result.current.firebaseAuthConnect(
-      //     "key1=value1&key2=value2"
-      //   );
-      //   expect(success).toBe(false);
-      // });
+    // テスト終了後にconsole.errorのモックを解除
+    consoleErrorMock.mockRestore();
+  });
 
-      // expect(signInWithCustomToken).not.toHaveBeenCalled();
-    });
+  test("should handle missing auth instance", async () => {
+    // mockUseAuthInit.mockReturnValue({ authInit: () => null });
+    // const { result } = renderHook(() => useAuthConnect());
+    // await act(async () => {
+    //   const success = await result.current.firebaseAuthConnect(
+    //     "key1=value1&key2=value2"
+    //   );
+    //   expect(success).toBe(false);
+    // });
+    // expect(signInWithCustomToken).not.toHaveBeenCalled();
+  });
 });

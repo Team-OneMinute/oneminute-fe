@@ -41,11 +41,11 @@ export function useAuthConnect() {
         return await signInWithCustomToken(auth, token)
           .then((userCredential) => {
             console.log("User logged in:", userCredential.user);
-            return true;
+            return userCredential.user.uid;
           })
           .catch((error) => {
             console.error("Error signing in with custom token:", error);
-            return false;
+            return "";
           });
       });
     },

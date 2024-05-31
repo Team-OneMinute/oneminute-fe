@@ -9,10 +9,12 @@ import { useAuthConnect } from "@/app/hooks/service/useAuthConnect";
 import { useEnv } from "./hooks/util/useEnv";
 import { initDataMock } from "@/app/mock/telegramInitData";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
-import { useGameStart } from "./hooks/service/useGameStart";
+import { useGameStart } from "@/app/hooks/service/useGameStart";
+import { useUserInitialize } from "@/app/hooks/service/useUserInitialize";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
+  const { userInitialize } = useUserInitialize();
   const { getEnv } = useEnv();
   const { goto } = usePageNavigate();
   const { startGame } = useGameStart();
@@ -32,9 +34,11 @@ export default function Home() {
         setInitData(
           initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
         );
-        await firebaseAuthConnect(initDataFromTelegram).then((result) => {
-          setIsAuthConnected(result);
+        const uid = await firebaseAuthConnect(initDataFromTelegram).then((result) => {
+          setIsAuthConnected(result != "");
+          return result;
         });
+        await userInitialize(uid);
       }
     })();
   }, []);
