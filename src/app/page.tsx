@@ -4,42 +4,47 @@ import { TonConnectButton } from "@tonconnect/ui-react";
 import { Box, Button, Typography } from "@mui/material";
 import { useTonConnect } from "@/app/hooks/service/useTonConnect";
 import WebApp from "@twa-dev/sdk";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuthConnect } from "@/app/hooks/service/useAuthConnect";
 import { useEnv } from "./hooks/util/useEnv";
 import { initDataMock } from "@/app/mock/telegramInitData";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { useGameStart } from "@/app/hooks/service/useGameStart";
-import { useUserInitialize } from "@/app/hooks/service/useUserInitialize";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
-  const { userInitialize } = useUserInitialize();
   const { getEnv } = useEnv();
   const { goto } = usePageNavigate();
   const { startGame } = useGameStart();
   const { connected } = useTonConnect();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
+  const didLogRef = useRef<boolean>(false);
 
   useEffect(() => {
-    (async () => {
-      if (typeof window !== "undefined" && isAuthConnected == false) {
-        let initDataFromTelegram = WebApp.initData;
-        console.log("env");
-        console.log(getEnv());
-        if (getEnv() == "dev") {
-          initDataFromTelegram = initDataMock[9];
+    if (didLogRef.current === false) {
+      didLogRef.current = true;
+    } else {
+      (async () => {
+        if (typeof window !== "undefined" && isAuthConnected == false) {
+          let initDataFromTelegram = WebApp.initData;
+          console.log("env");
+          console.log(getEnv());
+          if (getEnv() == "dev") {
+            initDataFromTelegram = initDataMock[9];
+          }
+          setInitData(
+            initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
+          );
+          await firebaseAuthConnect(initDataFromTelegram).then(
+            async (result) => {
+              console.log("result", result);
+              setIsAuthConnected(result != ""); // test on telegram display
+            }
+          );
         }
-        setInitData(
-          initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
-        );
-        await firebaseAuthConnect(initDataFromTelegram).then(async (result) => {
-          setIsAuthConnected(result != "");
-          await userInitialize(result);
-        });
-      }
-    })();
+      })();
+    }
   }, []);
 
   return (

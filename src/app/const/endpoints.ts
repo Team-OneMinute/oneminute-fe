@@ -1,2 +1,1 @@
-export const TELEGRAM_AUTH = "/telegramAuth";
-export const INITIALIZE_USER_DATA = "/initializeUserData";
+export const TELEGRAM_AUTH = "/app_name-v1-presentation-telegramAuth";

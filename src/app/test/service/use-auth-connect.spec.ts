@@ -30,7 +30,7 @@ describe("useAuthConnect", () => {
 
   test("success test", async () => {
     const mockGet = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ token: "mock-custom-token" }),
+      json: jest.fn().mockResolvedValue({ customToken: "mock-custom-token" }),
     });
     const mockAuth = { currentUser: { uid: "test-uid" } };
 
@@ -48,7 +48,7 @@ describe("useAuthConnect", () => {
     });
 
     expect(mockGet).toHaveBeenCalledWith(
-      "/telegramAuth",
+      "/app_name-v1-presentation-telegramAuth",
       "key1=value1&key2=value2"
     );
     expect(mockSignInWithCustomToken).toHaveBeenCalledWith(
@@ -59,7 +59,7 @@ describe("useAuthConnect", () => {
 
   test("should handle error in Firebase auth connection", async () => {
     const mockGet = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ token: "mock-custom-token" }),
+      json: jest.fn().mockResolvedValue({ customToken: "mock-custom-token" }),
     });
     const mockAuth = { currentUser: { uid: "test-uid" } };
 
@@ -82,7 +82,7 @@ describe("useAuthConnect", () => {
     });
 
     expect(mockGet).toHaveBeenCalledWith(
-      "/telegramAuth",
+      "/app_name-v1-presentation-telegramAuth",
       "key1=value1&key2=value2"
     );
     expect(mockSignInWithCustomToken).toHaveBeenCalledWith(

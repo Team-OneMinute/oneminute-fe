@@ -37,7 +37,8 @@ export function useAuthConnect() {
 
       // Step5:Firebase auth connect
       return await response.json().then(async (value) => {
-        const token: string = String(value.token);
+        const token: string = String(value.customToken);
+        // const isVerify = Boolean(value.isVerify); // TODO: isVerifyがfalseのときの制御
         console.log("customToken: ", token);
         return await signInWithCustomToken(auth, token)
           .then((userCredential) => {
