@@ -21,5 +21,8 @@ export function useFetchBE() {
 }
 
 const getFetchUrl = (endPoint: string) => {
+  if (process.env.NEXT_PUBLIC_BE_USE_SIMULATOR) {
+    return `${process.env.NEXT_PUBLIC_BE_SIMULATOR_URL}${endPoint}`;
+  }
   return `${process.env.NEXT_PUBLIC_BE_URL}${endPoint}`;
 };

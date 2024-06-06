@@ -10,6 +10,7 @@ import {
   getDocs,
   doc,
   getDoc,
+  connectFirestoreEmulator,
 } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
@@ -56,5 +57,9 @@ export function useFirestore() {
 
 const fireStoreInitialized = () => {
   const app = initializeApp(firebaseConfig);
-  return getFirestore(app);
+  const db = getFirestore(app);
+  if (process.env.NEXT_PUBLIC_BE_USE_SIMULATOR) {
+    connectFirestoreEmulator(db, "127.0.0.1", 8080);
+  }
+  return db;
 };

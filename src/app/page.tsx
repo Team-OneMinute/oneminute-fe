@@ -10,6 +10,7 @@ import { useEnv } from "./hooks/util/useEnv";
 import { initDataMock } from "@/app/mock/telegramInitData";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { useGameStart } from "@/app/hooks/service/useGameStart";
+import { useFirestore } from "./hooks/infrastructure/useFirestore";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
@@ -17,8 +18,11 @@ export default function Home() {
   const { goto } = usePageNavigate();
   const { startGame } = useGameStart();
   const { connected } = useTonConnect();
+  const { getDocumentByDocNo } = useFirestore();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
+  const [uid, setUid] = useState<string>("");
+  const [isPlayableMain, setIsPlayableMain] = useState<boolean>(false);
   const didLogRef = useRef<boolean>(false);
 
   useEffect(() => {
@@ -39,6 +43,7 @@ export default function Home() {
           await firebaseAuthConnect(initDataFromTelegram).then(
             async (result) => {
               console.log("result", result);
+              setUid(result);
               setIsAuthConnected(result != ""); // test on telegram display
             }
           );
@@ -46,6 +51,20 @@ export default function Home() {
       })();
     }
   }, []);
+
+  useEffect(() => {
+    if (isAuthConnected == true && uid != "") {
+      // fetch user data
+      (async () => {
+        await getDocumentByDocNo("users", uid).then(userData => {
+          if (userData) {
+            setIsPlayableMain(userData.life > 0);
+          }
+        });
+      })();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthConnected]);
 
   return (
     <main className={styles.main}>
@@ -71,6 +90,7 @@ export default function Home() {
             variant="contained"
             sx={{ width: "45%" }}
             onClick={() => startGame()}
+            disabled={!isPlayableMain}
           >
             main
           </Button>
