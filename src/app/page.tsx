@@ -89,7 +89,9 @@ export default function Home() {
           <Button
             variant="contained"
             sx={{ width: "45%" }}
-            onClick={() => startGame()}
+            onClick={async () => {
+              startGame("00001");
+            }}
             disabled={!isPlayableMain}
           >
             main
