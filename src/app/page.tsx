@@ -65,6 +65,15 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthConnected]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
+      (async () => {
+        const eruda = await import("eruda");
+        eruda.default.init();
+      })();
+    }
+  }, []);
+
   return (
     <main className={styles.main}>
       <Typography variant="h2" sx={{ color: "yellow" }}>
