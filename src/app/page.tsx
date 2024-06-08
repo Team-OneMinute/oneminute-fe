@@ -29,6 +29,9 @@ export default function Home() {
     if (didLogRef.current === false) {
       didLogRef.current = true;
       (async () => {
+        const eruda = await import("eruda");
+        eruda.default.init();
+
         if (typeof window !== "undefined" && isAuthConnected == false) {
           let initDataFromTelegram = WebApp.initData;
           console.log("env");
@@ -65,14 +68,14 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthConnected]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
-      (async () => {
-        const eruda = await import("eruda");
-        eruda.default.init();
-      })();
-    }
-  }, []);
+  // useEffect(() => {
+  //   // if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
+  //     // (async () => {
+  //     //   const eruda = await import("eruda");
+  //     //   eruda.default.init();
+  //     // })();
+  //   // }
+  // }, []);
 
   return (
     <main className={styles.main}>
