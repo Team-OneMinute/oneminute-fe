@@ -7,114 +7,78 @@ import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { serverTimestamp } from "firebase/firestore";
+import { useFunction } from "@/app/hooks/infrastructure/useFunction";
 
 // モックの設定
-jest.mock("@/app/hooks/infrastructure/useAuthInit", () => ({
-  useAuthInit: jest.fn(),
-}));
-
-jest.mock("@/app/hooks/infrastructure/useFirestore", () => ({
-  useFirestore: jest.fn(),
+jest.mock("@/app/hooks/infrastructure/useFunction", () => ({
+  useFunction: jest.fn(),
 }));
 
 jest.mock("@/app/hooks/util/usePageNavigate", () => ({
   usePageNavigate: jest.fn(),
 }));
 
-jest.mock("firebase/firestore", () => ({
-  serverTimestamp: jest.fn(),
-}));
-
 describe("useGameStart", () => {
   test("success start game", async () => {
-    const mockUid = "test-uid";
-    const mockAuth = {
-      currentUser: {
-        uid: mockUid,
-      },
-    };
-    const mockAddDocument = jest.fn().mockResolvedValue(true);
+    const mockCall = jest
+      .fn()
+      .mockResolvedValue({ data: { result: "success" } });
     const mockGoto = jest.fn();
 
-    (useAuthInit as jest.Mock).mockReturnValue({ authInit: () => mockAuth });
-    (useFirestore as jest.Mock).mockReturnValue({
-      addDocument: mockAddDocument,
-    });
+    (useFunction as jest.Mock).mockReturnValue({ call: mockCall });
     (usePageNavigate as jest.Mock).mockReturnValue({ goto: mockGoto });
-    (serverTimestamp as jest.Mock).mockReturnValue("timestamp");
 
     const { startGame } = useGameStart();
-    const { result } = renderHook(() => startGame());
+    const { result } = renderHook(() => startGame("00001"));
 
-    expect(mockAddDocument).toHaveBeenCalledWith("0001_transaction", {
-      uid: mockUid,
-      created_at: "timestamp",
-      cheat_check_flag: 0,
-      bet_flg: 0,
-    });
+    expect(mockCall).toHaveBeenCalledWith(
+      "app_name-v1-presentation-startMiniGameByLife",
+      {
+        gameId: "00001",
+      }
+    );
     await waitFor(() => expect(mockGoto).toHaveBeenCalledWith("game"));
   });
 
-  test("should not start game if auth is not initialized", () => {
-    (useAuthInit as jest.Mock).mockReturnValue({ authInit: () => null });
-    (useFirestore as jest.Mock).mockReturnValue({ addDocument: jest.fn() });
-    (usePageNavigate as jest.Mock).mockReturnValue({ goto: jest.fn() });
-
-    const { startGame } = useGameStart();
-    const { result } = renderHook(() => startGame());
-
-    expect(useFirestore().addDocument).not.toHaveBeenCalled();
-    expect(usePageNavigate().goto).not.toHaveBeenCalled();
-  });
-
-  test("should not start game if currentUser is null", () => {
-    const mockAuth = {
-      currentUser: null,
-    };
-    (useAuthInit as jest.Mock).mockReturnValue({
-      authInit: () => mockAuth,
-    });
-    (useFirestore as jest.Mock).mockReturnValue({ addDocument: jest.fn() });
-    (usePageNavigate as jest.Mock).mockReturnValue({ goto: jest.fn() });
-
-    const { startGame } = useGameStart();
-    const { result } = renderHook(() => startGame());
-
-    expect(useFirestore().addDocument).not.toHaveBeenCalled();
-    expect(usePageNavigate().goto).not.toHaveBeenCalled();
-  });
-
-  test("should not navigate to game page if addDocument response is not successful", async () => {
-    const mockUid = "test-uid";
-    const mockAuth = {
-      currentUser: {
-        uid: mockUid,
-      },
-    };
-
-    const mockAddDocument = jest.fn().mockResolvedValue(false);
+  test("should not start game if call startMiniGameByLife result is failed", () => {
+    const mockCall = jest
+      .fn()
+      .mockResolvedValue({ data: { result: "failed", reason: "error reason" } });
     const mockGoto = jest.fn();
 
-    (useAuthInit as jest.Mock).mockReturnValue({ authInit: () => mockAuth });
-    (useFirestore as jest.Mock).mockReturnValue({
-      addDocument: mockAddDocument,
-    });
+    (useFunction as jest.Mock).mockReturnValue({ call: mockCall });
     (usePageNavigate as jest.Mock).mockReturnValue({ goto: mockGoto });
-    (serverTimestamp as jest.Mock).mockReturnValue("timestamp");
 
     const { startGame } = useGameStart();
-    const { result } = renderHook(() => startGame());
+    const { result } = renderHook(() => startGame("00001"));
 
-    await waitFor(() =>
-      expect(mockAddDocument).toHaveBeenCalledWith("0001_transaction", {
-        uid: mockUid,
-        created_at: "timestamp",
-        cheat_check_flag: 0,
-        bet_flg: 0,
-      })
+    expect(mockCall).toHaveBeenCalledWith(
+      "app_name-v1-presentation-startMiniGameByLife",
+      {
+        gameId: "00001",
+      }
     );
+    expect(mockGoto).not.toHaveBeenCalled();
+  });
 
-    // `goto`が呼び出されないことを確認
+  test("should not start game if call startMiniGameByLife response is empty", () => {
+    const mockCall = jest
+      .fn()
+      .mockResolvedValue(undefined);
+    const mockGoto = jest.fn();
+
+    (useFunction as jest.Mock).mockReturnValue({ call: mockCall });
+    (usePageNavigate as jest.Mock).mockReturnValue({ goto: mockGoto });
+
+    const { startGame } = useGameStart();
+    const { result } = renderHook(() => startGame("00001"));
+
+    expect(mockCall).toHaveBeenCalledWith(
+      "app_name-v1-presentation-startMiniGameByLife",
+      {
+        gameId: "00001",
+      }
+    );
     expect(mockGoto).not.toHaveBeenCalled();
   });
 });

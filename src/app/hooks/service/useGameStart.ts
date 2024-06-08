@@ -1,30 +1,27 @@
-import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
-import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
-import { serverTimestamp } from "firebase/firestore";
+import { START_MINI_GAME_BY_LIFE } from "@/app/const/endpoints";
+import { useFunction } from "@/app/hooks/infrastructure/useFunction";
+
+interface OnCallResponseData {
+  result: string;
+}
 
 export function useGameStart() {
-  const { authInit } = useAuthInit();
-  const { addDocument } = useFirestore();
   const { goto } = usePageNavigate();
+  const { call } = useFunction();
 
   return {
-    startGame: () => {
-      const auth = authInit();
-      if (!auth) return;
-      if (auth.currentUser == null) return;
-      const uid = auth.currentUser.uid;
-
-      // step: set transaction
-      const collectionName = "0001_transaction";
-      const documentData = {
-        uid: uid,
-        created_at: serverTimestamp(),
-        cheat_check_flag: 0,
-        bet_flg: 0,
-      };
-      addDocument(collectionName, documentData).then(function (result) {
-        if (result) {
+    startGame: async (gameId: string) => {
+      await call(START_MINI_GAME_BY_LIFE, {
+        gameId,
+      }).then((response) => {
+        console.log("startMiniGameByLifeResponse", response);
+        if (!response) {
+          // TODO: add process, when failed to start game
+          return;
+        }
+        const data = response.data as OnCallResponseData;
+        if (data.result == "success") {
           goto("game");
         }
       });

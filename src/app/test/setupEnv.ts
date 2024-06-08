@@ -12,4 +12,5 @@ export const setupEnv = async (): Promise<void> => {
     loadEnvConfig(process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.cwd());
     loadEnvConfig(process.env.NEXT_PUBLIC_MEASUREMENT_ID || process.cwd());
     loadEnvConfig(process.env.NEXT_PUBLIC_ENV || process.cwd());
+    loadEnvConfig(process.env.NEXT_PUBLIC_BE_URL || process.cwd());
 };
