@@ -28,7 +28,6 @@ export default function Home() {
   useEffect(() => {
     if (didLogRef.current === false) {
       didLogRef.current = true;
-    } else {
       (async () => {
         if (typeof window !== "undefined" && isAuthConnected == false) {
           let initDataFromTelegram = WebApp.initData;
