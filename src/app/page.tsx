@@ -106,6 +106,7 @@ export default function Home() {
       </Button>
       <text color="white">{initData}</text>
       <text color="white">isAuthConnected: {String(isAuthConnected)}</text>
+      <text color="white">uid: {uid}</text>
       <TonConnectButton />
     </main>
   );
