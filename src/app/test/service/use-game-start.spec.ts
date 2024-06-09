@@ -3,10 +3,7 @@
  */
 import { renderHook, waitFor } from "@testing-library/react";
 import { useGameStart } from "@/app/hooks/service/useGameStart";
-import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
-import { useFirestore } from "@/app/hooks/infrastructure/useFirestore";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
-import { serverTimestamp } from "firebase/firestore";
 import { useFunction } from "@/app/hooks/infrastructure/useFunction";
 
 // モックの設定
@@ -32,7 +29,7 @@ describe("useGameStart", () => {
     const { result } = renderHook(() => startGame("00001"));
 
     expect(mockCall).toHaveBeenCalledWith(
-      "app_name-v1-presentation-startMiniGameByLife",
+      "app-v1-presentation-startMiniGameByLife",
       {
         gameId: "00001",
       }
@@ -53,7 +50,7 @@ describe("useGameStart", () => {
     const { result } = renderHook(() => startGame("00001"));
 
     expect(mockCall).toHaveBeenCalledWith(
-      "app_name-v1-presentation-startMiniGameByLife",
+      "app-v1-presentation-startMiniGameByLife",
       {
         gameId: "00001",
       }
@@ -74,7 +71,7 @@ describe("useGameStart", () => {
     const { result } = renderHook(() => startGame("00001"));
 
     expect(mockCall).toHaveBeenCalledWith(
-      "app_name-v1-presentation-startMiniGameByLife",
+      "app-v1-presentation-startMiniGameByLife",
       {
         gameId: "00001",
       }
