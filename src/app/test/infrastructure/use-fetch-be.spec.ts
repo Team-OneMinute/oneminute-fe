@@ -25,7 +25,7 @@ describe("useFetch", () => {
 
     const { result } = renderHook(() => useFetchBE());
 
-    const endPoint = "/test-endpoint";
+    const endPoint = "test-endpoint";
     const params = "param1=value1&param2=value2";
 
     await act(async () => {
@@ -47,7 +47,7 @@ describe("useFetch", () => {
 
     const { result } = renderHook(() => useFetchBE());
 
-    const endPoint = "/test-endpoint";
+    const endPoint = "test-endpoint";
     // const params = "param1=value1&param2=value2";
     const params = {
       param1: "value1",
