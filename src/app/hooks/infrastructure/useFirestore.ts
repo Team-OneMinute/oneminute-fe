@@ -56,6 +56,7 @@ export function useFirestore() {
 }
 
 const fireStoreInitialized = () => {
+  // TODO: save app to context on redux
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   if (process.env.NEXT_PUBLIC_BE_USE_SIMULATOR) {

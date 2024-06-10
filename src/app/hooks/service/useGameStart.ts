@@ -1,6 +1,7 @@
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { START_MINI_GAME_BY_LIFE } from "@/app/const/endpoints";
 import { useFunction } from "@/app/hooks/infrastructure/useFunction";
+import { useScore } from "./useScore";
 
 interface OnCallResponseData {
   result: string;
@@ -9,13 +10,16 @@ interface OnCallResponseData {
 export function useGameStart() {
   const { goto } = usePageNavigate();
   const { call } = useFunction();
+  const { getScore } = useScore();
 
   return {
-    startGame: async (gameId: string) => {
+    startGame: async (uid: string, gameId: string) => {
       await call(START_MINI_GAME_BY_LIFE, {
         gameId,
-      }).then((response) => {
+      }).then(async (response) => {
         console.log("startMiniGameByLifeResponse", response);
+        const score = await getScore(uid);
+        console.log("score", score);
         if (!response) {
           // TODO: add process, when failed to start game
           return;
