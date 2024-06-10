@@ -2,18 +2,35 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import * as THREE from "three";
+import { useCustomEffect } from "@/app/hooks/infrastructure/useCustomEffect";
+import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
+import { useGameFinish } from "@/app/hooks/service/useGameFinish";
 
 export default function Game() {
-    const [result, setResult] = useState<string | null>(null);
-    const [randomNum, setRandomNum] = useState<number>(0);
+  const [result, setResult] = useState<string | null>(null);
+  const [randomNum, setRandomNum] = useState<number>(0);
+  const [message, setMessage] = useState<string>("defaultMessage");
+  const { goto } = usePageNavigate();
+  const { finishGame } = useGameFinish();
 
-  const handleStartClick = () => {
-      const randomNumber = Math.floor(Math.random() * 20000);
-      setRandomNum(randomNumber);
+  const handleStartClick = async () => {
+    const randomNumber = Math.floor(Math.random() * 20000);
+    setRandomNum(randomNumber);
     setResult(randomNumber > 10000 ? "You Win!" : "You Lose.");
+    await finishGame("00001", randomNumber).then((message) => {
+      setMessage(message);
+    });
   };
 
-  useEffect(() => {
+  const handleRetryClick = () => {
+    console.log("onClick retry");
+  }
+
+  const handleBackClick = () => {
+    goto("/");
+  }
+
+  useCustomEffect(() => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -46,7 +63,7 @@ export default function Game() {
     return () => {
       document.getElementById("game-canvas")?.removeChild(renderer.domElement);
     };
-  }, []);
+  });
 
   return (
     <Box
@@ -70,8 +87,23 @@ export default function Game() {
       </Button>
       {result && (
         <>
+          <Button
+            variant="contained"
+            sx={{ marginBottom: "20px" }}
+            onClick={handleRetryClick}
+          >
+            RETRY
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ marginBottom: "20px" }}
+            onClick={handleBackClick}
+          >
+            BACK
+          </Button>
           <Typography variant="h4">{result}</Typography>
           <Typography variant="h4">{`randomNum: ${randomNum}`}</Typography>
+          <Typography variant="h4">{`message: ${message}`}</Typography>
         </>
       )}
 
