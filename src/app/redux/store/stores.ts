@@ -3,12 +3,14 @@ import {
   useSelector as rawUseSelector,
   TypedUseSelectorHook,
 } from "react-redux";
+import gameTransactionReducer from "./slices/gameTransactionSlice";
 import scoreReducer from "./slices/scoreSlice";
 import firebaseReducer from "./slices/firebaseSlice";
 
 export const stores = configureStore({
   reducer: {
     firebase: firebaseReducer,
+    gameTransaction: gameTransactionReducer,
     score: scoreReducer,
   },
 });

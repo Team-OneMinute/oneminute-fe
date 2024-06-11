@@ -10,7 +10,7 @@ export function useScore() {
 
   return {
     getScoreByFirestore: async (uid: string) => {
-      return await getDocumentByDocNo("scores", uid).then((scoreData) => {
+      return await getDocumentByDocNo("score", uid).then((scoreData) => {
         if (!scoreData) {
           return;
         }

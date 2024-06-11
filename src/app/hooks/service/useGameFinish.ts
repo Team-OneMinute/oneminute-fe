@@ -1,7 +1,8 @@
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { FINISH_MINI_GAME } from "@/app/const/endpoints";
 import { useFunction } from "@/app/hooks/infrastructure/useFunction";
-import { useScore } from "./useScore";
+import { useScore } from "@/app/hooks/service/useScore";
+import { useGameTransaction } from "@/app/hooks/service/useGameTransaction";
 
 interface FinishMiniGameResponse {
   success: boolean;
@@ -39,8 +40,9 @@ const castResponseData = (response: any): FinishMiniGameResponse & (FinishMiniGa
 export function useGameFinish() {
   const { call } = useFunction();
   const { getScoreByStore } = useScore();
+  const { getGameTransactionId } = useGameTransaction();
 
-  const gameTransactionId = "00001999999999920240610000000"; // dummy transactionId
+  const gameTransactionId = getGameTransactionId();
 
   return {
     finishGame: async (gameId: string, score: number) => {
@@ -57,7 +59,7 @@ export function useGameFinish() {
       return await call(FINISH_MINI_GAME, {
         gameId: gameId,
         gameTransactionId: gameTransactionId,
-        // score: score, // TODO: maybe exist
+        score: score, // TODO: maybe exist
       }).then((response) => {
         console.log("finishMiniGameResponse", response);
         if (!response) {
