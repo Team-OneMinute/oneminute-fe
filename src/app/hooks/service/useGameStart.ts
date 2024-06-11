@@ -10,7 +10,7 @@ interface OnCallResponseData {
 export function useGameStart() {
   const { goto } = usePageNavigate();
   const { call } = useFunction();
-  const { getScore } = useScore();
+  const { getScoreByFirestore } = useScore();
 
   return {
     startGame: async (uid: string, gameId: string) => {
@@ -18,7 +18,7 @@ export function useGameStart() {
         gameId,
       }).then(async (response) => {
         console.log("startMiniGameByLifeResponse", response);
-        const score = await getScore(uid);
+        const score = await getScoreByFirestore(uid);
         console.log("score", score);
         if (!response) {
           // TODO: add process, when failed to start game

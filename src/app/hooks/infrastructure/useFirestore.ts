@@ -1,8 +1,7 @@
-import { firebaseConfig } from "@/app/config/firebaseConfig";
+import { useSelector } from "@/app/redux/store/stores";
 import {
   collection,
   addDoc,
-  getFirestore,
   QueryFieldFilterConstraint,
   where,
   WhereFilterOp,
@@ -10,17 +9,16 @@ import {
   getDocs,
   doc,
   getDoc,
-  connectFirestoreEmulator,
 } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
 
 export function useFirestore() {
+  const firestore = useSelector((state) => state.firebase.firestore);
   return {
     // TODO: トランザクション登録
     addDocument: async (collectionName: string, documentData: Object) => {
       try {
         const docRef = await addDoc(
-          collection(fireStoreInitialized(), collectionName),
+          collection(firestore, collectionName),
           documentData
         );
         return docRef.id;
@@ -29,7 +27,7 @@ export function useFirestore() {
       }
     },
     getDocument: async (collectionName: string, queries: string[]) => {
-      const collectionRef = collection(fireStoreInitialized(), collectionName);
+      const collectionRef = collection(firestore, collectionName);
       const firestoreQueries: QueryFieldFilterConstraint[] = queries.map(
         (query) => {
           const splitQueries = query.split(" ");
@@ -45,7 +43,7 @@ export function useFirestore() {
       return docSnap.docs.map((doc) => doc.data());
     },
     getDocumentByDocNo: async (collectionName: string, docNo: string) => {
-      const docRef = doc(fireStoreInitialized(), collectionName, docNo);
+      const docRef = doc(firestore, collectionName, docNo);
       const docData = await getDoc(docRef).then((docSnap) => {
         return docSnap.data();
       });
@@ -54,13 +52,3 @@ export function useFirestore() {
     },
   };
 }
-
-const fireStoreInitialized = () => {
-  // TODO: save app to context on redux
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  if (process.env.NEXT_PUBLIC_BE_USE_SIMULATOR) {
-    connectFirestoreEmulator(db, "127.0.0.1", 8080);
-  }
-  return db;
-};
