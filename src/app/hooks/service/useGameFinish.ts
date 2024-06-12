@@ -1,4 +1,3 @@
-import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { FINISH_MINI_GAME } from "@/app/const/endpoints";
 import { useFunction } from "@/app/hooks/infrastructure/useFunction";
 import { useScore } from "@/app/hooks/service/useScore";
@@ -59,7 +58,7 @@ export function useGameFinish() {
       return await call(FINISH_MINI_GAME, {
         gameId: gameId,
         gameTransactionId: gameTransactionId,
-        score: score, // TODO: maybe exist
+        score: score,
       }).then((response) => {
         console.log("finishMiniGameResponse", response);
         if (!response) {

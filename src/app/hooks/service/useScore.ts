@@ -14,9 +14,7 @@ export function useScore() {
         if (!scoreData) {
           return;
         }
-        // const score = Number(scoreData.score);
         const score: number = scoreData.score;
-        console.log("score_beforeDispatch", score);
         dispatch(setScore(score));
 
         return score;

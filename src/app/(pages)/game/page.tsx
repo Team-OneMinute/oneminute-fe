@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import * as THREE from "three";
 import { useCustomEffect } from "@/app/hooks/infrastructure/useCustomEffect";
