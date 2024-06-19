@@ -24,6 +24,7 @@ export function WelcomeLoading() {
         autoPlay
         loop
         muted
+        playsInline
         style={{
           width: "100%",
           height: "auto",
