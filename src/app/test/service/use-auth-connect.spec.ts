@@ -48,7 +48,7 @@ describe("useAuthConnect", () => {
     });
 
     expect(mockGet).toHaveBeenCalledWith(
-      "/app_name-v1-presentation-telegramAuth",
+      "app-v1-presentation-telegramAuth",
       "key1=value1&key2=value2"
     );
     expect(mockSignInWithCustomToken).toHaveBeenCalledWith(
@@ -82,7 +82,7 @@ describe("useAuthConnect", () => {
     });
 
     expect(mockGet).toHaveBeenCalledWith(
-      "/app_name-v1-presentation-telegramAuth",
+      "app-v1-presentation-telegramAuth",
       "key1=value1&key2=value2"
     );
     expect(mockSignInWithCustomToken).toHaveBeenCalledWith(

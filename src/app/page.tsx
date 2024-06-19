@@ -4,13 +4,14 @@ import { TonConnectButton } from "@tonconnect/ui-react";
 import { Box, Button, Typography } from "@mui/material";
 import { useTonConnect } from "@/app/hooks/service/useTonConnect";
 import WebApp from "@twa-dev/sdk";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthConnect } from "@/app/hooks/service/useAuthConnect";
 import { useEnv } from "./hooks/util/useEnv";
 import { initDataMock } from "@/app/mock/telegramInitData";
 import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { useGameStart } from "@/app/hooks/service/useGameStart";
 import { useFirestore } from "./hooks/infrastructure/useFirestore";
+import { useCustomEffect } from "./hooks/infrastructure/useCustomEffect";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
@@ -23,59 +24,41 @@ export default function Home() {
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
   const [uid, setUid] = useState<string>("");
   const [isPlayableMain, setIsPlayableMain] = useState<boolean>(false);
-  const didLogRef = useRef<boolean>(false);
 
-  useEffect(() => {
-    if (didLogRef.current === false) {
-      didLogRef.current = true;
-      (async () => {
-        const eruda = await import("eruda");
-        eruda.default.init();
-
-        if (typeof window !== "undefined" && isAuthConnected == false) {
-          let initDataFromTelegram = WebApp.initData;
-          console.log("env");
-          console.log(getEnv());
-          if (getEnv() == "dev") {
-            initDataFromTelegram = initDataMock[9];
-          }
-          setInitData(
-            initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
-          );
-          await firebaseAuthConnect(initDataFromTelegram).then(
-            async (result) => {
-              console.log("result", result);
-              setUid(result);
-              setIsAuthConnected(result != ""); // test on telegram display
-            }
-          );
+  useCustomEffect(() => {
+    (async () => {
+      if (typeof window !== "undefined" && isAuthConnected == false) {
+        let initDataFromTelegram = WebApp.initData;
+        console.log("env");
+        console.log(getEnv());
+        if (getEnv() == "dev") {
+          initDataFromTelegram = initDataMock[9];
         }
-      })();
-    }
-  }, []);
+        setInitData(
+          initDataFromTelegram != "" ? initDataFromTelegram : "blankData"
+        );
+        await firebaseAuthConnect(initDataFromTelegram).then(async (result) => {
+          console.log("result", result);
+          setUid(result);
+          setIsAuthConnected(result != ""); // test on telegram display
+        });
+      }
+    })();
+  });
 
   useEffect(() => {
     if (isAuthConnected == true && uid != "") {
       // fetch user data
       (async () => {
-        await getDocumentByDocNo("users", uid).then(userData => {
+        await getDocumentByDocNo("users", uid).then((userData) => {
           if (userData) {
             setIsPlayableMain(userData.life > 0);
           }
         });
       })();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthConnected]);
-
-  // useEffect(() => {
-  //   // if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
-  //     // (async () => {
-  //     //   const eruda = await import("eruda");
-  //     //   eruda.default.init();
-  //     // })();
-  //   // }
-  // }, []);
 
   return (
     <main className={styles.main}>
@@ -101,7 +84,7 @@ export default function Home() {
             variant="contained"
             sx={{ width: "45%" }}
             onClick={async () => {
-              startGame("00001");
+              startGame(uid, "00001");
             }}
             disabled={!isPlayableMain}
           >
