@@ -20,7 +20,7 @@ export function WelcomeLoading() {
         OneMinute
       </div>
       <video
-        src="/Loading.mov"
+        src="/Loading.mp4"
         autoPlay
         loop
         muted
