@@ -6,8 +6,10 @@ export function useCustomEffect<T>(func: () => T) {
     if (didLogRef.current === false) {
       didLogRef.current = true;
       (async () => {
-        const eruda = await import("eruda");
-        eruda.default.init();
+        if (process.env.NEXT_PUBLIC_ENV != "prod") {
+          const eruda = await import("eruda");
+          eruda.default.init();
+        }
       })();
       func();
     }

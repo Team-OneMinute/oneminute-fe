@@ -84,7 +84,7 @@ export default function Home() {
             variant="contained"
             sx={{ width: "45%" }}
             onClick={async () => {
-              startGame("00001");
+              startGame(uid, "00001");
             }}
             disabled={!isPlayableMain}
           >

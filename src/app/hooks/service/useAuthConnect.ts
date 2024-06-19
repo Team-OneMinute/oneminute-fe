@@ -2,14 +2,16 @@ import { signInWithCustomToken } from "firebase/auth";
 import { useFetchBE } from "@/app/hooks/infrastructure/useFetchBE";
 import { useAuthInit } from "@/app/hooks/infrastructure/useAuthInit";
 import { TELEGRAM_AUTH } from "@/app/const/endpoints";
+import { useSelector } from "@/app/redux/store/stores";
 
 export function useAuthConnect() {
   const { get } = useFetchBE();
-  const { authInit } = useAuthInit();
+  const auth = useSelector((state) => state.firebase.firebaseAuth);
+  // const { authInit } = useAuthInit();
 
   return {
     firebaseAuthConnect: async (initData: string) => {
-      const auth = authInit();
+      // const auth = authInit();
       console.log("initData", initData);
       const decodedInitData = decodeURIComponent(initData);
       //console.log("decodedInitData", decodedInitData);
