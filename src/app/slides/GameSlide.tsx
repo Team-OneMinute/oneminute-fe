@@ -1,7 +1,9 @@
 "use client";
 import styled from "styled-components";
 import { SliderTemplate } from "../components/Templates/SliderTemplate";
-import { Text } from "../components/Atoms/Text";
+import { Paragraph } from "../components/Molecules/Paragraph";
+import { SubTitle } from "../components/Molecules/SubTitle";
+import { Title } from "../components/Molecules/Title";
 
 const targetMark = (isSelected: boolean) => {
   return isSelected ? (
@@ -18,9 +20,11 @@ const targetMark = (isSelected: boolean) => {
 export const GameSlide = () => {
   return (
     <SliderTemplate>
-      <Text text="test" size="medium" color="white"/>
       <MapArea src="/map.webp" />
       {targetMark(true)}
+      <Title text="Hello" />
+      <SubTitle text="Hello" />
+      <Paragraph text="HELLO" />
     </SliderTemplate>
   );
 };

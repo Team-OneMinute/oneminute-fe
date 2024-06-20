@@ -15,15 +15,15 @@ export const Text = (props: Props) => {
   const fontSize = (size: TextSize) => {
     switch (size) {
       case "small":
-        return "1rem"; // 16px
+        return "16px"; // 16px
       case "medium":
-        return "1.25rem"; // 20px
+        return "20px"; // 20px
       case "large":
-        return "2rem"; // 32px
+        return "32px"; // 32px
       case "xlarge":
-        return "3rem"; // 48px
+        return "48px"; // 48px
       default:
-        return "1.25rem";
+        return "20px";
     }
   };
 
@@ -41,16 +41,16 @@ export const Text = (props: Props) => {
   };
 
   return (
-    <TextDiv fontSize={fontSize(size)} fontColor={fontColor(color)}>
+    <TextDiv $fontSize={fontSize(size)} $fontColor={fontColor(color)}>
       {text}
     </TextDiv>
   );
 };
 
-const TextDiv = styled.div<{ fontSize: string, fontColor: string }>`
+const TextDiv = styled.div<{ $fontSize: string; $fontColor: string }>`
   height: 100%;
   width: 100%;
-  color: ${(props) => props.fontColor};
-  font-size: ${(props) => props.fontSize};
+  color: ${(props) => props.$fontColor};
+  font-size: ${(props) => props.$fontSize};
   text-family: Iceland;
 `;
