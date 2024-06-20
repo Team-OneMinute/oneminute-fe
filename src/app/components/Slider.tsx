@@ -13,7 +13,7 @@ import { EarnSlide } from "@/app/slides/EarnSlide";
 import { UserSlide } from "@/app/slides/UserSlide";
 import { InviteSlide } from "@/app/slides/InviteSlide";
 import { GameSlide } from "@/app/slides/GameSlide";
-import { Header } from "./Header";
+import { Header } from "./Organisms/Header";
 const slideName = ["GAME", "EARN", "USER", "INVITE"];
 
 const pagination = {
@@ -69,13 +69,4 @@ const HeaderArea = styled.div`
   background: rgba(0, 0, 0, 0);
 `;
 
-// const HeaderArea = styled.div`
-//   width: calc(100% - 32px);
-//   position: absolute;
-//   display: flex;
-//   flex-direction: row;
-//   align-items: center;
-//   justify-content: space-between;
-//   margin: 100%;
-//   z-index: 2;
-// `;
+
