@@ -9,13 +9,7 @@ export const Title = (props: Props) => {
   const { text } = props;
 
   return (
-    <Titlediv>
       <Text text={text} size="large" color="white" />
-    </Titlediv>
   );
 };
 
-const Titlediv = styled.div`
-  height: 100%;
-  width: 100%;
-`;
