@@ -13,9 +13,6 @@ import { useGameStart } from "@/app/hooks/service/useGameStart";
 import { useFirestore } from "./hooks/infrastructure/useFirestore";
 import { useCustomEffect } from "./hooks/infrastructure/useCustomEffect";
 import { WelcomeLoading } from "@/app/components/WelcomeLoading";
-import { Slider } from "@/app/components/Slider";
-import { Header } from "@/app/components/Header";
-import styled from "styled-components";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
@@ -76,6 +73,55 @@ export default function Home() {
     // クリーンアップタイマー
     return () => clearTimeout(timer);
   }, [isAuthConnected]);
-
-  return <>{showWelcomeLoading ? <WelcomeLoading /> : <Slider />}</>;
+  return (
+    <>
+      {showWelcomeLoading ? (
+        <WelcomeLoading />
+      ) : (
+        <main className={styles.main}>
+          <Typography variant="h2" sx={{ color: "yellow" }}>
+            OneMinute
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "50%",
+            }}
+          >
+            <Button
+              variant="contained"
+              sx={{ width: "45%" }}
+              onClick={() => goto("game")}
+            >
+              Free
+            </Button>
+            {connected && (
+              <Button
+                variant="contained"
+                sx={{ width: "45%" }}
+                onClick={async () => {
+                  startGame(uid, "00001");
+                }}
+                disabled={!isPlayableMain}
+              >
+                main
+              </Button>
+            )}
+          </Box>
+          <Button
+            variant="contained"
+            sx={{ width: "100%" }}
+            onClick={() => goto("login")}
+          >
+            telegram login
+          </Button>
+          <text color="white">{initData}</text>
+          <text color="white">isAuthConnected: {String(isAuthConnected)}</text>
+          <text color="white">uid: {uid}</text>
+          <TonConnectButton />
+        </main>
+      )}
+    </>
+  );
 }
