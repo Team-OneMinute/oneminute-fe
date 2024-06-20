@@ -5,12 +5,12 @@ interface Props {
   text: string;
 }
 
-export const Title = (props: Props) => {
+export const GameTitle = (props: Props) => {
   const { text } = props;
 
   return (
     <Titlediv>
-      <Text text={text} size="large" color="white" />
+      <Text text={text} size="xlarge" color="white" />
     </Titlediv>
   );
 };

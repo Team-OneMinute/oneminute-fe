@@ -21,7 +21,7 @@ export const Text = (props: Props) => {
       case "large":
         return "32px"; // 32px
       case "xlarge":
-        return "48px"; // 48px
+        return "80px"; // 48px
       default:
         return "20px";
     }
@@ -52,5 +52,4 @@ const TextDiv = styled.div<{ $fontSize: string; $fontColor: string }>`
   width: 100%;
   color: ${(props) => props.$fontColor};
   font-size: ${(props) => props.$fontSize};
-  text-family: Iceland;
 `;
