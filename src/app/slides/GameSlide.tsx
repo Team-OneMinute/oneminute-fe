@@ -17,7 +17,7 @@ const targetMark = (isSelected: boolean) => {
 export const GameSlide = () => {
   return (
     <SliderTemplate>
-      <MapArea src="/Map.svg" />
+      <MapArea src="/map.webp" />
       {targetMark(true)}
     </SliderTemplate>
   );

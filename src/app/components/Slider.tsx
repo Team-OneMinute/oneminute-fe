@@ -57,6 +57,7 @@ const SwiperContainer = styled.div`
   --swiper-pagination-bottom: auto;
   --swiper-pagination-top: ${HEADER_HEIGHT};
   --swiper-pagination-bullet-height: 100%;
+  --swiper-pagination-bullet-horizontal-gap: 8px;
 `;
 
 const HeaderArea = styled.div`
