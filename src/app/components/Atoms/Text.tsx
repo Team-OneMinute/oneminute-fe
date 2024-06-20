@@ -48,8 +48,6 @@ export const Text = (props: Props) => {
 };
 
 const TextDiv = styled.div<{ $fontSize: string; $fontColor: string }>`
-  height: 100%;
-  width: 100%;
   color: ${(props) => props.$fontColor};
   font-size: ${(props) => props.$fontSize};
 `;

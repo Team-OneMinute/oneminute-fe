@@ -7,22 +7,27 @@ export function WelcomeLoading() {
   return (
     <>
       <TitleArea>
-        <GameTitle text={OneMinuteConfig.SERVICE_NAME}/>
+        <GameTitle text={OneMinuteConfig.SERVICE_NAME} />
       </TitleArea>
-      <Loading loadingType="movieLoading" source="/Loading.mp4" />
+      <LoadingArea>
+        <Loading loadingType="movieLoading" source="/Loading.mp4" />
+      </LoadingArea>
     </>
   );
 }
 
 const TitleArea = styled.div`
-  height: 20%;
+  height: 40%;
   width: 100%;
+  display: flex;
+  align-items: end;
+  justify-content: center;
 `;
 
-
-      // {
-      //   /* Hard cord style, because can't be in time first rendering */
-      // }
-      // <div style={{ color: "white", fontSize: "80px" }}>
-      //   {OneMinuteConfig.SERVICE_NAME}
-      // </div>;
+const LoadingArea = styled.div`
+  height: 60%;
+  width: 100%;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+`;
