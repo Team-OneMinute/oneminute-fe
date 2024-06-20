@@ -11,7 +11,7 @@ body {
     background: #000;
     font-family: 'Iceland', sans-serif;
     font-size: 14px;
-    color: #000;
+    color: #fff;
     margin: 0;
     padding: 0;
 }
@@ -24,7 +24,7 @@ body {
 .swiper-slide {
     text-align: center;
     font-size: 18px;
-    background: #fff;
+    background: #000;
 
     /* Center slide text vertically */
     display: flex;
@@ -41,8 +41,8 @@ body {
     padding: 0, 30px;
     width: 70px;
     height: var(--swiper-pagination-bullet-height, 35px);
-    border-radius: 20px;
-    border: 2px solid #fff;
+    border-radius: 0px;
+    border-bottom: 2px solid #fff;
     text-align: center;
     line-height: var(--swiper-pagination-bullet-height, 35px);
     font-size: 12px;

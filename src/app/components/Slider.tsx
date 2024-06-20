@@ -49,7 +49,7 @@ const SwiperContainer = styled.div`
   width: 100%;
   height: 100%;
   --swiper-pagination-bottom: auto;
-  --swiper-pagination-top: 100%;
+  --swiper-pagination-top: 80px;
   --swiper-pagination-bullet-height: 100%;
 `;
 
