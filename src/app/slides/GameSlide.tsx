@@ -1,6 +1,7 @@
 "use client";
 import styled from "styled-components";
 import { SliderTemplate } from "../components/Templates/SliderTemplate";
+import { MapArea } from "../components/Organisms/MapArea";
 
 const targetMark = (isSelected: boolean) => {
   return isSelected ? (
@@ -17,16 +18,19 @@ const targetMark = (isSelected: boolean) => {
 export const GameSlide = () => {
   return (
     <SliderTemplate>
-      <MapArea src="/map.webp" />
       {targetMark(true)}
+      <MapArea />
     </SliderTemplate>
   );
 };
 
-const MapArea = styled.img`
-  margin-top: 4vh;
-  width: 100%;
-`;
+// const MapHeader = styled.img`
+//   width: 100%;
+// `;
+
+// const MapArea = styled.div`
+//   width: 100%;
+// `;
 
 const TargetDiv = styled.div`
   position: absolute;
