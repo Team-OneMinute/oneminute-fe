@@ -14,6 +14,8 @@ import { useFirestore } from "./hooks/infrastructure/useFirestore";
 import { useCustomEffect } from "./hooks/infrastructure/useCustomEffect";
 import { WelcomeLoading } from "@/app/components/WelcomeLoading";
 import { Slider } from "@/app/components/Slider";
+import { Header } from "@/app/components/Header";
+import styled from "styled-components";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
@@ -75,15 +77,5 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [isAuthConnected]);
 
-  return (
-    <>
-      {showWelcomeLoading ? (
-        <WelcomeLoading />
-      ) : (
-
-          <Slider />
-
-      )}
-    </>
-  );
+  return <>{showWelcomeLoading ? <WelcomeLoading /> : <Slider />}</>;
 }

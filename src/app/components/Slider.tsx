@@ -13,6 +13,7 @@ import { EarnSlide } from "@/app/slides/EarnSlide";
 import { UserSlide } from "@/app/slides/UserSlide";
 import { InviteSlide } from "@/app/slides/InviteSlide";
 import { GameSlide } from "@/app/slides/GameSlide";
+import { Header } from "./Header";
 const slideName = ["GAME", "EARN", "USER", "INVITE"];
 
 const pagination = {
@@ -26,6 +27,9 @@ export const Slider = () => {
   return (
     <>
       <SwiperContainer>
+        <HeaderArea>
+          <Header />
+        </HeaderArea>
         <Swiper pagination={pagination} modules={[Pagination]}>
           <SwiperSlide>
             <GameSlide />
@@ -45,21 +49,32 @@ export const Slider = () => {
   );
 };
 
+const HEADER_HEIGHT = "15vh";
+
 const SwiperContainer = styled.div`
   width: 100%;
   height: 100%;
   --swiper-pagination-bottom: auto;
-  --swiper-pagination-top: 80px;
+  --swiper-pagination-top: ${HEADER_HEIGHT};
   --swiper-pagination-bullet-height: 100%;
 `;
 
 const HeaderArea = styled.div`
-  width: calc(100% - 32px);
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin: 100%;
+  height: ${HEADER_HEIGHT};
+  width: 100%;
+  padding: 4vh 4vw 0 4vw;
+  position: relative;
   z-index: 2;
+  background: rgba(0, 0, 0, 0);
 `;
+
+// const HeaderArea = styled.div`
+//   width: calc(100% - 32px);
+//   position: absolute;
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: space-between;
+//   margin: 100%;
+//   z-index: 2;
+// `;
