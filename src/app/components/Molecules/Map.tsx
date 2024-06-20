@@ -11,4 +11,5 @@ export const Map = () => {
 
 const MapComponent = styled.div`
   width: 100%;
+  padding: 0 4vw 0 4vw;
 `;

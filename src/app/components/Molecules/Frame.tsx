@@ -23,6 +23,6 @@ export const Frame = (props: Props) => {
     );
 }
 
-const FrameComponent = styled.img`
-  width: 100%;
+const FrameComponent = styled.div`
+  width: 60%;
 `;
