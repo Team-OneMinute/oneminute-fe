@@ -12,7 +12,7 @@ import { usePageNavigate } from "@/app/hooks/util/usePageNavigate";
 import { useGameStart } from "@/app/hooks/service/useGameStart";
 import { useFirestore } from "./hooks/infrastructure/useFirestore";
 import { useCustomEffect } from "./hooks/infrastructure/useCustomEffect";
-import { WelcomeLoading } from "@/app/components/WelcomeLoading";
+import { WelcomeLoading } from "@/app/components/Organisms/WelcomeLoading";
 import { Slider } from "@/app/components/Slider";
 import { Header } from "@/app/components/Header";
 import styled from "styled-components";
