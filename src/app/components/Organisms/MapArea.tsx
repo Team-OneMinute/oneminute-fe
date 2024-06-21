@@ -1,3 +1,4 @@
+"use client";
 import styled from "styled-components";
 import { Frame } from "@/app/components/Molecules/Frame";
 import { Map } from "@/app/components/Molecules/Map";
