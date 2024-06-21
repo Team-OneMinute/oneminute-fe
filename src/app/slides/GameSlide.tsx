@@ -18,7 +18,6 @@ const targetMark = (isSelected: boolean) => {
 export const GameSlide = () => {
   return (
     <SliderTemplate>
-      {targetMark(true)}
       <MapArea />
     </SliderTemplate>
   );
