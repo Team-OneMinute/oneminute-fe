@@ -1,11 +1,11 @@
 "use client";
 import styled from "styled-components";
-import { Image } from "@/app/components/Atoms/Image";
+import { NoiseImage } from "@/app/components/Atoms/NoiseImage";
 
 export const Human = () => {
   return (
     <HumanComponent>
-      <Image source="/human1.png" objFit="cover" />
+      <NoiseImage src="/human1.png" />
     </HumanComponent>
   );
 };

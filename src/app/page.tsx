@@ -77,5 +77,5 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [isAuthConnected]);
 
-  return <>{showWelcomeLoading ? <WelcomeLoading /> : <Slider />}</>;
+  return <>{!showWelcomeLoading ? <WelcomeLoading /> : <Slider />}</>;
 }
