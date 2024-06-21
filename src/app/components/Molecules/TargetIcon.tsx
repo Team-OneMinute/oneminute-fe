@@ -23,7 +23,7 @@ const TargetTypeMap: TargetType = {
 export const TargetIcon = (props: Props) => {
   const { isSelected, position, onClick } = props;
   const targetType = isSelected ? "selected" : "notSelected";
-  const size = isSelected ? 3 : 2;
+  const size = isSelected ? 4 : 3;
 
   return (
     <TargetComponent
