@@ -1,4 +1,6 @@
 "use client";
+import { SubTitle } from "@/app/components/Molecules/SubTitle";
+
 export const EarnSlide = () => {
-  return <div>This is earn slide</div>;
+  return <SubTitle text="Coming Soon..." />;
 };

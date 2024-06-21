@@ -1,8 +1,10 @@
 "use client";
+import styled from "styled-components";
+import { UserArea } from "@/app/components/Organisms/UserArea";
 interface props {
   pageName: string;
 }
 
 export const UserSlide = () => {
-  return <div>This is earn user</div>;
+  return <UserArea/>;
 };
