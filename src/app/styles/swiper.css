@@ -19,7 +19,7 @@
 
 .swiper-slide img {
     display: block;
-    object-fit: cover;
+    object-fit: var(--swiper-img-object-fit, cover);
 }
 
 .swiper-pagination-bullet {

@@ -25,5 +25,5 @@ export const Frame = (props: Props) => {
 };
 
 const FrameComponent = styled.div`
-  width: 60%;
+  width: 100%;
 `;

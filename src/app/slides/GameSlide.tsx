@@ -2,6 +2,8 @@
 import { SliderTemplate } from "../components/Templates/SliderTemplate";
 import { MapArea } from "../components/Organisms/MapArea";
 import { useState } from "react";
+import { FrameTemplate } from "../components/Templates/FrameTemplate";
+import styled from "styled-components";
 
 export const GameSlide = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>("0001");
@@ -28,6 +30,16 @@ export const GameSlide = () => {
         selectedGameId={selectedGameId}
         setSelectedGameId={setSelectedGameId}
       />
+      <DescriptionArea>
+        <FrameTemplate frameType="001" height="23vh" width="100%">
+          <div>aaa</div>
+        </FrameTemplate>
+      </DescriptionArea>
     </SliderTemplate>
   );
 };
+
+const DescriptionArea = styled.div`
+  width: 100%;
+  margin-top: 2vh;
+`;
