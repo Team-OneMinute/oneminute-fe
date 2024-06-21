@@ -49,7 +49,7 @@ export const Slider = () => {
   );
 };
 
-const HEADER_HEIGHT = "15vh";
+const HEADER_HEIGHT = "11vh";
 
 const SwiperContainer = styled.div`
   width: 100%;

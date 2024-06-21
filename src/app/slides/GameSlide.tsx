@@ -4,6 +4,7 @@ import { MapArea } from "../components/Organisms/MapArea";
 import { useState } from "react";
 import { FrameTemplate } from "../components/Templates/FrameTemplate";
 import styled from "styled-components";
+import { Button } from "@/app/components/Molecules/Button";
 
 export const GameSlide = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>("0001");
@@ -23,6 +24,10 @@ export const GameSlide = () => {
     },
   ];
 
+  const run = () => {
+    console.log("");
+  }
+
   return (
     <SliderTemplate>
       <MapArea
@@ -33,6 +38,14 @@ export const GameSlide = () => {
       <DescriptionArea>
         <FrameTemplate frameType="001" height="23vh" width="100%">
           <div>aaa</div>
+          <ButtonsArea>
+            <Button
+              size="small"
+              variant="whiteFilled"
+              text="Play"
+              onClick={run}
+            />
+          </ButtonsArea>
         </FrameTemplate>
       </DescriptionArea>
     </SliderTemplate>
@@ -42,4 +55,9 @@ export const GameSlide = () => {
 const DescriptionArea = styled.div`
   width: 100%;
   margin-top: 2vh;
+`;
+
+const ButtonsArea = styled.div`
+  display: flex;
+  align-items: end;
 `;

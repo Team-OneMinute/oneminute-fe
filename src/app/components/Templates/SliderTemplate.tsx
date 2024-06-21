@@ -11,5 +11,5 @@ export const SliderTemplate = (props: Props) => {
 const SliderComponent = styled.div`
   height: 100%;
   width: 100%;
-  padding: calc(15vh + 20px + 2px) 4vw 4vh 4vw;
+  padding: calc(11vh + 20px + 2px) 4vw 4vh 4vw;
 `;
