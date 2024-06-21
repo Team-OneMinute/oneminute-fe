@@ -1,3 +1,4 @@
+"use client";
 import styled from "styled-components";
 
 type TextSize = "small" | "medium" | "large" | "xlarge";
