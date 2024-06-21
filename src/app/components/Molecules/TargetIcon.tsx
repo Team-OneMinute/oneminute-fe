@@ -17,7 +17,7 @@ type TargetType = {
 
 const TargetTypeMap: TargetType = {
   selected: "/Target_red.svg",
-  notSelected: "/Target_white.svg",
+  notSelected: "/target1.png",
 };
 
 export const TargetIcon = (props: Props) => {

@@ -13,6 +13,12 @@ export const GameSlide = () => {
     {
       gameId: "0002",
     },
+    {
+      gameId: "0003",
+    },
+    {
+      gameId: "0004",
+    },
   ];
 
   return (
