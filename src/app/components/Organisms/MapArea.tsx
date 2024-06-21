@@ -78,7 +78,7 @@ const Component = styled.div`
 `;
 
 const MapFrame = styled.div`
-  width: 100%;
+  width: 60%;
 `;
 
 const MapComponent = styled.div`

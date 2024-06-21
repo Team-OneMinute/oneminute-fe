@@ -40,7 +40,7 @@ const randomEffects = () => {
         applyEffect("glitch");
       }, 200); // ノイズのエフェクト後にグリッチを適用
     }
-  }, Math.random() * 3000 + 2000); // 2秒から10秒の間隔でノイズエフェクトを適用
+  }, Math.random() * 3000 + 2000); // 2秒から5秒の間隔でノイズエフェクトを適用
 };
 
 useEffect(() => {
