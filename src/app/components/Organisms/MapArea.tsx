@@ -4,7 +4,50 @@ import { Frame } from "@/app/components/Molecules/Frame";
 import { Map } from "@/app/components/Molecules/Map";
 import { TargetIcon } from "../Molecules/TargetIcon";
 
-export const MapArea = () => {
+interface Props {
+  gameList: { gameId: string }[]; // TODO: make interface
+  selectedGameId: string;
+  setSelectedGameId: (gameId: string) => void;
+}
+
+const targetPositions = [
+  {
+    x: 50,
+    y: 50,
+  },
+  {
+    x: 60,
+    y: 70,
+  },
+  {
+    x: 70,
+    y: 20,
+  },
+  {
+    x: 20,
+    y: 20,
+  },
+  {
+    x: 30,
+    y: 80,
+  },
+];
+
+const getTargetIconList = (
+  gameList: { gameId: string }[], // TODO: make interface
+  selectedGameId: string
+) => {
+  return gameList.map((game, index) => {
+    const isSelected = game.gameId == selectedGameId;
+    return (
+      <TargetIcon isSelected={isSelected} position={targetPositions[index]} />
+    );
+  });
+};
+
+export const MapArea = (props: Props) => {
+  const { gameList, selectedGameId, setSelectedGameId } = props;
+
   return (
     <Component>
       <MapFrame>
@@ -12,9 +55,7 @@ export const MapArea = () => {
       </MapFrame>
       <MapComponent>
         <Map />
-        <TargetIcon isSelected position={{ x: 50, y: 50 }} />
-        <TargetIcon isSelected={false} position={{ x: 0, y: 0 }} />
-        <TargetIcon isSelected={false} position={{ x: 100, y: 100 }} />
+        {getTargetIconList(gameList, selectedGameId)}
       </MapComponent>
     </Component>
   );
