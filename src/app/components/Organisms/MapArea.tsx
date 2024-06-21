@@ -47,6 +47,7 @@ const getTargetIconList = (
     };
     return (
       <TargetIcon
+        key={game.gameId}
         isSelected={isSelected}
         position={targetPositions[index]}
         onClick={() => onClickAction(game.gameId)}
