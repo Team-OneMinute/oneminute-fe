@@ -8,6 +8,7 @@ interface Props {
     x: number;
     y: number;
   };
+  onClick: () => void;
 }
 
 type TargetType = {
@@ -20,12 +21,17 @@ const TargetTypeMap: TargetType = {
 };
 
 export const TargetIcon = (props: Props) => {
-  const { isSelected, position } = props;
+  const { isSelected, position, onClick } = props;
   const targetType = isSelected ? "selected" : "notSelected";
   const size = isSelected ? 3 : 2;
 
   return (
-    <TargetComponent x={position.x} y={position.y} size={size} >
+    <TargetComponent
+      x={position.x}
+      y={position.y}
+      size={size}
+      onClick={onClick}
+    >
       <Image source={TargetTypeMap[targetType]} />
     </TargetComponent>
   );

@@ -35,12 +35,22 @@ const targetPositions = [
 
 const getTargetIconList = (
   gameList: { gameId: string }[], // TODO: make interface
-  selectedGameId: string
+  selectedGameId: string,
+  setSelectedGameId: (gameId: string) => void
 ) => {
   return gameList.map((game, index) => {
     const isSelected = game.gameId == selectedGameId;
+    const onClickAction = (gameId: string) => {
+      if (gameId != selectedGameId) {
+        setSelectedGameId(gameId);
+      }
+    };
     return (
-      <TargetIcon isSelected={isSelected} position={targetPositions[index]} />
+      <TargetIcon
+        isSelected={isSelected}
+        position={targetPositions[index]}
+        onClick={() => onClickAction(game.gameId)}
+      />
     );
   });
 };
@@ -55,7 +65,7 @@ export const MapArea = (props: Props) => {
       </MapFrame>
       <MapComponent>
         <Map />
-        {getTargetIconList(gameList, selectedGameId)}
+        {getTargetIconList(gameList, selectedGameId, setSelectedGameId)}
       </MapComponent>
     </Component>
   );
