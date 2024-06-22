@@ -29,6 +29,7 @@ export const Button: React.FC<ButtonProps> = ({
 const ButtonArea = styled.div`
   position: relative;
   display: inline-block;
+  z-index: 4;
 `;
 
 const ButtonText = styled.div`
