@@ -6,6 +6,7 @@ import { FrameTemplate } from "../components/Templates/FrameTemplate";
 import styled from "styled-components";
 import { Button } from "@/app/components/Molecules/Button";
 import { Modal } from "@/app/components/Organisms/Modal";
+import { usePageNavigate } from "../hooks/util/usePageNavigate";
 
 export const GameSlide = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>("0001");
@@ -27,6 +28,8 @@ export const GameSlide = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const { goto } = usePageNavigate();
+
   const handleOpenModal = () => {
     console.log("open modal");
     setIsModalOpen(true);
@@ -36,7 +39,15 @@ export const GameSlide = () => {
     setIsModalOpen(false);
   };
 
-  const gamePlayButtonHandler = () => {
+  const gamePlayButtonHandler = (playMode: "free" | "main") => {
+    switch (playMode) {
+      case "main":
+      // TODO: check has life
+        // TODO: start game api
+      case "free":
+      default:
+        goto("game");
+    }
     console.log("");
   }
 
@@ -51,8 +62,14 @@ export const GameSlide = () => {
             <Button
               size="small"
               variant="blackFilled"
-              text="Close"
-              onClick={handleCloseModal}
+              text="FreePlay"
+              onClick={() => gamePlayButtonHandler("free")}
+            />
+            <Button
+              size="small"
+              variant="blackFilled"
+              text="MainPlay"
+              onClick={() => gamePlayButtonHandler("main")}
             />
           </>
         }

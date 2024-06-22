@@ -20,6 +20,6 @@ const StyledFooter = styled.div<{ $backgroundColor: string }>`
   padding: 16px;
   border-top: 1px solid #ddd;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-evenly;
   align-items: center;
 `;
