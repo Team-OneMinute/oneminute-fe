@@ -6,12 +6,14 @@ import {
 import gameTransactionReducer from "./slices/gameTransactionSlice";
 import scoreReducer from "./slices/scoreSlice";
 import firebaseReducer from "./slices/firebaseSlice";
+import gameInfoReducer from "./slices/gameInfoSlice";
 
 export const stores = configureStore({
   reducer: {
     firebase: firebaseReducer,
     gameTransaction: gameTransactionReducer,
     score: scoreReducer,
+    gameInfo: gameInfoReducer,
   },
 });
 
