@@ -40,7 +40,12 @@ export function useFirestore() {
       );
       const firestoreQuery = query(collectionRef, ...firestoreQueries);
       const docSnap = await getDocs(firestoreQuery);
-      return docSnap.docs.map((doc) => doc.data());
+      return docSnap.docs.map((doc) => {
+        return {
+          id: doc.id,
+          data: doc.data(),
+        };
+      });
     },
     getDocumentByDocNo: async (collectionName: string, docNo: string) => {
       const docRef = doc(firestore, collectionName, docNo);

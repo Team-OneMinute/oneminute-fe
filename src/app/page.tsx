@@ -16,6 +16,7 @@ import { WelcomeLoading } from "@/app/components/Organisms/WelcomeLoading";
 import { Slider } from "@/app/components/Slider";
 import { Header } from "@/app/components/Organisms/Header";
 import styled from "styled-components";
+import { useGameInfo } from "./hooks/service/useGameInfo";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
@@ -24,6 +25,7 @@ export default function Home() {
   const { startGame } = useGameStart();
   const { connected } = useTonConnect();
   const { getDocumentByDocNo } = useFirestore();
+  const { getGameInfo } = useGameInfo();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
   const [uid, setUid] = useState<string>("");
@@ -60,6 +62,7 @@ export default function Home() {
             setIsPlayableMain(userData.life > 0);
           }
         });
+        await getGameInfo();
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
