@@ -5,6 +5,8 @@ import { useState } from "react";
 import { FrameTemplate } from "../components/Templates/FrameTemplate";
 import styled from "styled-components";
 import { Button } from "@/app/components/Molecules/Button";
+import { Modal } from "@/app/components/Organisms/Modal";
+import { usePageNavigate } from "../hooks/util/usePageNavigate";
 
 export const GameSlide = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>("0001");
@@ -24,12 +26,56 @@ export const GameSlide = () => {
     },
   ];
 
-  const run = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { goto } = usePageNavigate();
+
+  const handleOpenModal = () => {
+    console.log("open modal");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const gamePlayButtonHandler = (playMode: "free" | "main") => {
+    switch (playMode) {
+      case "main":
+      // TODO: check has life
+        // TODO: start game api
+      case "free":
+      default:
+        goto("game");
+    }
     console.log("");
   }
 
   return (
     <SliderTemplate>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title="Modal Title"
+        actions={
+          <>
+            <Button
+              size="small"
+              variant="blackFilled"
+              text="FreePlay"
+              onClick={() => gamePlayButtonHandler("free")}
+            />
+            <Button
+              size="small"
+              variant="blackFilled"
+              text="MainPlay"
+              onClick={() => gamePlayButtonHandler("main")}
+            />
+          </>
+        }
+      >
+        <p>Modal content goes here.</p>
+      </Modal>
       <MapArea
         gameList={gameList}
         selectedGameId={selectedGameId}
@@ -43,7 +89,7 @@ export const GameSlide = () => {
               size="small"
               variant="whiteFilled"
               text="Play"
-              onClick={run}
+              onClick={handleOpenModal}
             />
           </ButtonsArea>
         </FrameTemplate>
