@@ -7,28 +7,20 @@ import styled from "styled-components";
 import { Button } from "@/app/components/Molecules/Button";
 import { Modal } from "@/app/components/Organisms/Modal";
 import { usePageNavigate } from "../hooks/util/usePageNavigate";
+import { useGameInfo } from "../hooks/service/useGameInfo";
 
 export const GameSlide = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>("0001");
-  const gameList = [
-    // TODO: get gameList
-    {
-      gameId: "0001",
-    },
-    {
-      gameId: "0002",
-    },
-    {
-      gameId: "0003",
-    },
-    {
-      gameId: "0004",
-    },
-  ];
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const { getGameInfoByStore } = useGameInfo();
   const { goto } = usePageNavigate();
+
+  const gameList = getGameInfoByStore();
+  console.log("gameList", gameList);
+  const selectedGame = gameList.find(game => game.gameId == selectedGameId);
+  const gameDescription = selectedGame ? selectedGame.description : "";
 
   const handleOpenModal = () => {
     console.log("open modal");
@@ -74,7 +66,7 @@ export const GameSlide = () => {
           </>
         }
       >
-        <p>Modal content goes here.</p>
+        <GameDescription>{gameDescription}</GameDescription>
       </Modal>
       <MapArea
         gameList={gameList}
@@ -106,4 +98,8 @@ const DescriptionArea = styled.div`
 const ButtonsArea = styled.div`
   display: flex;
   align-items: end;
+`;
+
+const GameDescription = styled.p`
+  color: #000000;
 `;
