@@ -8,6 +8,8 @@ import { Button } from "@/app/components/Molecules/Button";
 import { Modal } from "@/app/components/Organisms/Modal";
 import { usePageNavigate } from "../hooks/util/usePageNavigate";
 import { useGameInfo } from "../hooks/service/useGameInfo";
+import { useGameStart } from "../hooks/service/useGameStart";
+import { useUserInfo } from "../hooks/service/useUserInfo";
 
 export const GameSlide = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>("0001");
@@ -16,6 +18,8 @@ export const GameSlide = () => {
 
   const { getGameInfoByStore } = useGameInfo();
   const { goto } = usePageNavigate();
+  const { startGame } = useGameStart();
+  const { uid } = useUserInfo();
 
   const gameList = getGameInfoByStore();
   console.log("gameList", gameList);
@@ -34,8 +38,7 @@ export const GameSlide = () => {
   const gamePlayButtonHandler = (playMode: "free" | "main") => {
     switch (playMode) {
       case "main":
-      // TODO: check has life
-        // TODO: start game api
+        startGame(uid, selectedGameId);
       case "free":
       default:
         goto("game");

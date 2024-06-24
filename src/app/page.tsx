@@ -17,6 +17,7 @@ import { Slider } from "@/app/components/Slider";
 import { Header } from "@/app/components/Organisms/Header";
 import styled from "styled-components";
 import { useGameInfo } from "./hooks/service/useGameInfo";
+import { useUserInfo } from "./hooks/service/useUserInfo";
 
 export default function Home() {
   const { firebaseAuthConnect } = useAuthConnect();
@@ -26,9 +27,9 @@ export default function Home() {
   const { connected } = useTonConnect();
   const { getDocumentByDocNo } = useFirestore();
   const { getGameInfo } = useGameInfo();
+  const { uid, setUid } = useUserInfo();
   const [initData, setInitData] = useState<string>("initialdata");
   const [isAuthConnected, setIsAuthConnected] = useState<boolean>(false);
-  const [uid, setUid] = useState<string>("");
   const [isPlayableMain, setIsPlayableMain] = useState<boolean>(false);
   const [showWelcomeLoading, setShowWelcomeLoading] = useState<boolean>(true);
 
