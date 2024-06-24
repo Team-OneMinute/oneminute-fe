@@ -25,8 +25,10 @@ const FrameInfoMap: FrameType = {
       padding-left: 4%;
     `,
     childrenStyle: `
-      padding: 10% 7% 10% 13%;
-      overflow: scroll;
+      // padding: 10% 7% 10% 13%;
+      padding-left: 4%;
+      // overflow: scroll;
+      position: relative;
     `,
   },
   "002": {

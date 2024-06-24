@@ -69,7 +69,7 @@ export const GameSlide = () => {
           </>
         }
       >
-        <GameDescription>{gameDescription}</GameDescription>
+        <ModalBody>{gameDescription}</ModalBody>
       </Modal>
       <MapArea
         gameList={gameList}
@@ -78,7 +78,8 @@ export const GameSlide = () => {
       />
       <DescriptionArea>
         <FrameTemplate frameType="001" height="23vh" width="100%">
-          <div>aaa</div>
+          <DescriptionTitle>Running Man</DescriptionTitle>
+          <DescriptionBody>{gameDescription}</DescriptionBody>
           <ButtonsArea>
             <Button
               size="small"
@@ -98,11 +99,29 @@ const DescriptionArea = styled.div`
   margin-top: 2vh;
 `;
 
-const ButtonsArea = styled.div`
-  display: flex;
-  align-items: end;
+const DescriptionTitle = styled.div`
+  position: absolute;
+  top: 2%;
+  right: 26%;
 `;
 
-const GameDescription = styled.p`
+const DescriptionBody = styled.p`
+  position: absolute;
+  width: 78%;
+  height: 39%;
+  overflow: scroll;
+  word-break: break-word;
+  text-align: start;
+  left: 14%;
+  top: 20%;
+`;
+
+const ButtonsArea = styled.div`
+  position: absolute;
+  bottom: 16%;
+  right: 9%;
+`;
+
+const ModalBody = styled.p`
   color: #000000;
 `;
