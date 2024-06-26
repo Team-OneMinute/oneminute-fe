@@ -19,11 +19,11 @@ export default function Game() {
   let renderer: THREE.WebGLRenderer;
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
-  let spotLight: THREE.SpotLight;
+  let light: THREE.DirectionalLight;
   let texture: THREE.Texture;
   let floor: THREE.Mesh;
-  let material: THREE.MeshStandardMaterial;
-  let geometry: THREE.BoxGeometry;
+  let tileMaterial: THREE.MeshStandardMaterial;
+  let tileGeometry: THREE.BoxGeometry;
   let raycaster: THREE.Raycaster;
   let touch: THREE.Vector2;
   let fontLoader: FontLoader;
@@ -34,7 +34,53 @@ export default function Game() {
   let startTimestamp = Date.now();
   let isTimeUp = false;
 
-  let boxs: THREE.Mesh[] = [];
+  const tileConfig = {
+    size: {
+      x: 16,
+      y: 2,
+      z: 24,
+    },
+  };
+  const railConfig = {
+    laneCount: 4,
+    length: 260,
+    position: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+  };
+  const railLineConfig = {
+    color: 0xffffff,
+    lineWidth: 2,
+  };
+  const railFloorConfig = {
+    size: {
+      x:
+        tileConfig.size.x * railConfig.laneCount +
+        railLineConfig.lineWidth * (railConfig.laneCount + 1),
+      y: 1,
+      z: railConfig.length,
+    },
+    color: 0xffffff,
+  };
+
+  const cameraConfig = {
+    position: {
+      x: railFloorConfig.size.x / 2,
+      y: 65,
+      z: 270,
+    },
+    focusPosition: {
+      x: railFloorConfig.size.x / 2,
+      y: 0,
+      z: 180,
+    },
+    fov: 110,
+  };
+
+  let tiles: THREE.Mesh[] = [];
+  let tileStartPositions: { x: number; y: number; z: number }[] = [];
   let textMesh: THREE.Mesh;
   let timeTextMesh: THREE.Mesh;
   let usedFont: Font;
@@ -74,66 +120,154 @@ export default function Game() {
 
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(30, width / height, 1, 9999);
-    camera.position.x = 0;
-    camera.position.y = 400;
-    camera.position.z = 865;
-    camera.lookAt(new THREE.Vector3(0, 100, 0));
+    camera = new THREE.PerspectiveCamera(
+      cameraConfig.fov,
+      width / height,
+      1,
+      9999
+    );
+    camera.position.x = cameraConfig.position.x;
+    camera.position.y = cameraConfig.position.y;
+    camera.position.z = cameraConfig.position.z;
+    camera.lookAt(
+      new THREE.Vector3(
+        cameraConfig.focusPosition.x,
+        cameraConfig.focusPosition.y,
+        cameraConfig.focusPosition.z
+      )
+    );
 
     raycaster = new THREE.Raycaster();
     touch = new THREE.Vector2();
 
-    spotLight = new THREE.SpotLight(
-      0xffffff,
-      200,
-      20000,
-      Math.PI / 5,
-      0.2,
-      0.5
-    );
-    spotLight.position.set(0, 10000, 0);
-    spotLight.castShadow = true; // 影を落とす設定
-    spotLight.shadow.mapSize.width = 2048;
-    spotLight.shadow.mapSize.height = 2048;
-    scene.add(spotLight);
+    light = new THREE.DirectionalLight(0xffffff, 1);
+    // spotLight.position.set(0, 10000, 0);
+    // spotLight.castShadow = true; // 影を落とす設定
+    // spotLight.shadow.mapSize.width = 2048;
+    // spotLight.shadow.mapSize.height = 2048;
+    scene.add(light);
 
-    texture = new THREE.TextureLoader().load("floor.png");
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping; // リピート可能に
-    texture.repeat.set(10, 100); // 10x10マスに設定
-    texture.magFilter = THREE.NearestFilter; // アンチエイリアスを外す
-    floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(200, 10000),
-      new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.0,
-        metalness: 0.6,
-      })
-    );
-    floor.name = "floor";
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true; // 影の設定
-    scene.add(floor);
+    makeRail();
 
-    material = new THREE.MeshStandardMaterial({
+    // texture = new THREE.TextureLoader().load("floor.png");
+    // texture.wrapS = texture.wrapT = THREE.RepeatWrapping; // リピート可能に
+    // texture.repeat.set(10, 100); // 10x10マスに設定
+    // texture.magFilter = THREE.NearestFilter; // アンチエイリアスを外す
+    // floor = new THREE.Mesh(
+    //   new THREE.PlaneGeometry(200, 10000),
+    //   new THREE.MeshStandardMaterial({
+    //     map: texture,
+    //     roughness: 0.0,
+    //     metalness: 0.6,
+    //   })
+    // );
+    // floor.name = "floor";
+    // floor.rotation.x = -Math.PI / 2;
+    // floor.receiveShadow = true; // 影の設定
+    // scene.add(floor);
+
+    // set tile start positions
+    for (let i = 0; i < railConfig.laneCount; i++) {
+      const tileStartPosition = {
+        x:
+          railConfig.position.x +
+          railLineConfig.lineWidth +
+          (tileConfig.size.x + railLineConfig.lineWidth) * i,
+        y: railConfig.position.y,
+        z: railConfig.position.z,
+      };
+      tileStartPositions.push(tileStartPosition);
+    }
+    console.log("tileStartPositions", tileStartPositions);
+
+    tileMaterial = new THREE.MeshStandardMaterial({
       color: 0x22dd22,
       roughness: 0.1,
       metalness: 0.2,
     });
-    geometry = new THREE.BoxGeometry(45, 2, 45);
+    tileGeometry = new THREE.BoxGeometry(
+      tileConfig.size.x,
+      tileConfig.size.y,
+      tileConfig.size.z
+    );
 
     fontLoader = new FontLoader();
 
-    makeText(formatNumber(count), "score");
-    makeText(formatTime(startTime), "time");
+    // makeText(formatNumber(count), "score");
+    // makeText(formatTime(startTime), "time");
   };
 
-  const makeBox = () => {
-    const box = new THREE.Mesh(geometry, material);
-    box.position.x = Math.round((Math.random() - 0.5) * 19) * 10;
-    box.position.y = 4;
-    box.position.z = -2500;
-    box.name = "box";
-    return box as THREE.Mesh;
+  const makeTile = (laneIndex: number) => {
+    const tile = new THREE.Mesh(tileGeometry, tileMaterial);
+    tile.position.x =
+      tileStartPositions[laneIndex].x + tileGeometry.parameters.width / 2;
+    tile.position.y =
+      tileStartPositions[laneIndex].y + tileGeometry.parameters.height / 2;
+    tile.position.z =
+      tileStartPositions[laneIndex].z + tileGeometry.parameters.depth / 2;
+    tile.name = "tile";
+    return tile as THREE.Mesh;
+  };
+
+  const makeLine = (
+    lineMaterial: THREE.MeshStandardMaterial,
+    position: { x: number; y: number; z: number }
+  ) => {
+    // const points = [];
+    // for (let i = 0; i < positions.length; i++) {
+    //   points.push(
+    //     new THREE.Vector3(positions[i].x, positions[i].y, positions[i].z)
+    //   );
+    // }
+    const lineGeometry = new THREE.BoxGeometry(
+      railLineConfig.lineWidth,
+      railLineConfig.lineWidth,
+      railConfig.length
+    );
+    const line = new THREE.Mesh(lineGeometry, lineMaterial);
+    line.position.x = position.x + line.geometry.parameters.width / 2;
+    line.position.y = position.y + line.geometry.parameters.height / 2;
+    line.position.z = position.z + line.geometry.parameters.depth / 2;
+    line.name = "line";
+    scene.add(line);
+  };
+  const makeRail = () => {
+    const lineMaterial = new THREE.MeshStandardMaterial({
+      color: railLineConfig.color,
+      // linewidth: railLineConfig.lineWidth,
+    });
+
+    const startXPoints = [];
+    let startXPoint = railConfig.position.x;
+    for (let i = 0; i < railConfig.laneCount + 1; i++) {
+      startXPoints.push(startXPoint);
+      startXPoint += railLineConfig.lineWidth;
+      startXPoint += tileConfig.size.x;
+    }
+
+    for (let i = 0; i < startXPoints.length; i++) {
+      // const points = [
+      //   // start point
+      //   {
+      //     x: startXPoints[i],
+      //     y: railConfig.position.y,
+      //     z: railConfig.position.z,
+      //   },
+      //   // end point
+      //   {
+      //     x: startXPoints[i],
+      //     y: railConfig.position.y,
+      //     z: railConfig.position.z + railConfig.length,
+      //   },
+      // ];
+      const point = {
+        x: startXPoints[i],
+        y: railConfig.position.y,
+        z: railConfig.position.z,
+      };
+      console.log(`point${i}`, point);
+      makeLine(lineMaterial, point);
+    }
   };
 
   const formatNumber = (num: number): string => {
@@ -254,7 +388,7 @@ export default function Game() {
     count += 1;
     if (textMesh) {
       console.log("textMesh", textMesh);
-      updateText(formatNumber(count), "score");
+      // updateText(formatNumber(count), "score");
     }
   };
 
@@ -267,7 +401,7 @@ export default function Game() {
     raycaster.setFromCamera(touch, camera);
     const intersects = raycaster.intersectObjects(scene.children);
     const selectedBox = intersects.find((intersect) => {
-      return intersect.object.name == "box";
+      return intersect.object.name == "tile";
     });
 
     if (selectedBox) {
@@ -279,32 +413,53 @@ export default function Game() {
 
   // 毎フレーム時に実行されるループイベントです
   const tick = () => {
-    let newBoxs = [];
-    for (let i = 0; i < boxs.length; i++) {
-      if (boxs[i].position.z > 865) {
-        scene.remove(boxs[i]);
+    let newTiles = [];
+    for (let i = 0; i < tiles.length; i++) {
+      if (tiles[i].position.z > 865) {
+        scene.remove(tiles[i]);
       } else {
-        newBoxs.push(boxs[i]);
+        newTiles.push(tiles[i]);
       }
     }
-    boxs = newBoxs;
-    if (Math.random() > 0.9) {
-      const newBox = makeBox();
-      scene.add(newBox);
-      boxs.push(newBox);
+    tiles = newTiles;
+    // if (Math.random() > 0.9) {
+    //   const newTile = makeTile();
+    //   scene.add(newTile);
+    //   tiles.push(newTile);
+    // }
+    let elapsedTime = Date.now() - startTimestamp;
+    if (elapsedTime % 1000 == 0) {
+      const newTile = makeTile(0);
+      scene.add(newTile);
+      tiles.push(newTile);
     }
-    boxs.map((box) => (box.position.z += 5));
+    if (elapsedTime % 1500 == 0) {
+      const newTile = makeTile(1);
+      scene.add(newTile);
+      tiles.push(newTile);
+    }
+    if (elapsedTime % 2000 == 0) {
+      const newTile = makeTile(2);
+      scene.add(newTile);
+      tiles.push(newTile);
+    }
+    if (elapsedTime % 2500 == 0) {
+      const newTile = makeTile(3);
+      scene.add(newTile);
+      tiles.push(newTile);
+    }
+    tiles.map((tile) => (tile.position.z += 0.1));
 
-    if (!isTimeUp && timeTextMesh != undefined) {
-      let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
-      let remainingTime = startTime - elapsedTime; // タイムリミット - 経過時間
-      if (remainingTime > 0) {
-        updateText(formatTime(remainingTime), "time");
-      } else {
-        updateText("00:00.00", "time");
-        isTimeUp = true;
-      }
-    }
+    // if (!isTimeUp && timeTextMesh != undefined) {
+    //   let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
+    //   let remainingTime = startTime - elapsedTime; // タイムリミット - 経過時間
+    //   if (remainingTime > 0) {
+    //     updateText(formatTime(remainingTime), "time");
+    //   } else {
+    //     updateText("00:00.00", "time");
+    //     isTimeUp = true;
+    //   }
+    // }
 
     // レンダリング
     renderer.render(scene, camera);
