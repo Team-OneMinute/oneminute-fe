@@ -39,10 +39,6 @@ export default function Game() {
   let timeTextMesh: THREE.Mesh;
   let usedFont: Font;
 
-  // サイズを指定
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const ratio = width / height;
   const fontUrl =
     "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"; // フォントのURL
 
@@ -64,6 +60,10 @@ export default function Game() {
   };
 
   const initializeGame = () => {
+    // サイズを指定
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const ratio = width / height;
     renderer = new THREE.WebGLRenderer({
       canvas: document.querySelector("#myCanvas") as HTMLCanvasElement,
       antialias: true,
