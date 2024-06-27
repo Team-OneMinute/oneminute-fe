@@ -13,6 +13,26 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 
+interface TextConfig {
+  position: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  rotation: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  size: number;
+  depth: number;
+  color: number;
+}
+
+interface TextMesh {
+  mesh: THREE.Mesh | null;
+}
+
 export default function Game() {
   const [result, setResult] = useState<string | null>(null);
   const [randomNum, setRandomNum] = useState<number>(0);
@@ -88,10 +108,47 @@ export default function Game() {
     fov: 110,
   };
 
+  const textConfig = {
+    score: {
+      position: {
+        x: railFloorConfig.size.x / 2,
+        y: 50,
+        z: 50,
+      },
+      rotation: {
+        x: -10,
+        y: 0,
+        z: 0,
+      },
+      size: 20,
+      depth: 1,
+      color: 0xffffff,
+    } as TextConfig,
+    time: {
+      position: {
+        x: 80,
+        y: 40,
+        z: 180,
+      },
+      rotation: {
+        x: 0,
+        y: -75,
+        z: 0,
+      },
+      size: 10,
+      depth: 1,
+      color: 0xffffff,
+    } as TextConfig,
+  };
+
   let tiles: THREE.Mesh[] = [];
   let tileStartPositions: { x: number; y: number; z: number }[] = [];
-  let textMesh: THREE.Mesh;
-  let timeTextMesh: THREE.Mesh;
+  const textMeshs = {
+    score: null,
+    time: null,
+  };
+  let scoreTextMesh: TextMesh = { mesh: null };
+  let timeTextMesh: TextMesh = { mesh: null };
   let usedFont: Font;
 
   const fontUrl =
@@ -216,8 +273,8 @@ export default function Game() {
 
     fontLoader = new FontLoader();
 
-    // makeText(formatNumber(count), "score");
-    // makeText(formatTime(startTime), "time");
+    makeText(formatNumber(count), textConfig.score, scoreTextMesh);
+    makeText(formatTime(startTime), textConfig.time, timeTextMesh);
 
     for (let i = 0; i < 10; i++) {
       moveTile(tileConfig.size.z + tileConfig.space);
@@ -286,7 +343,8 @@ export default function Game() {
   };
 
   const formatNumber = (num: number): string => {
-    return num.toString().padStart(7, "0");
+    // return num.toString().padStart(7, "0");
+    return num.toString();
   };
   const formatTime = (ms: number) => {
     let seconds = Math.floor(ms / 1000);
@@ -298,37 +356,15 @@ export default function Game() {
       "0"
     )}.${String(milliseconds).padStart(3, "0").substring(0, 2)}`;
   };
-  const makeText = (text: string, type: "score" | "time") => {
+  const makeText = (text: string, config: TextConfig, textMesh: TextMesh) => {
+    // let textMesh: THREE.Mesh;
     fontLoader.load(fontUrl, (font) => {
       usedFont = font;
 
-      let textSize: number;
-      let positionX: number;
-      let positionY: number;
-      let positionZ: number;
-      switch (type) {
-        case "score":
-          textSize = 50;
-          positionX = 28;
-          positionY = 10;
-          positionZ = -1100;
-          break;
-        case "time":
-          textSize = 45;
-          positionX = 28;
-          positionY = 10;
-          positionZ = -800;
-          break;
-        default:
-          textSize = 50;
-          positionX = 28;
-          positionY = 10;
-          positionZ = -1100;
-      }
       const textGeometry = new TextGeometry(text, {
         font: font,
-        size: textSize,
-        height: 10, // 立体感のための高さ
+        size: config.size,
+        depth: config.depth,
         curveSegments: 12,
         bevelEnabled: true,
         bevelThickness: 0.03,
@@ -336,41 +372,26 @@ export default function Game() {
         bevelOffset: 0,
         bevelSegments: 5,
       });
-      const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const mesh = new THREE.Mesh(textGeometry, textMaterial);
-      mesh.position.set(positionX, positionY, positionZ);
-      mesh.rotation.x = (Math.PI / 180) * -5;
-      mesh.rotation.y = (Math.PI / 180) * -40;
-      scene.add(mesh);
-      switch (type) {
-        case "score":
-          textMesh = mesh;
-          break;
-        case "time":
-          timeTextMesh = mesh;
-          break;
-        default:
-          textMesh = mesh;
-      }
+      textGeometry.center();
+      const textMaterial = new THREE.MeshBasicMaterial({ color: config.color });
+      textMesh.mesh = new THREE.Mesh(textGeometry, textMaterial);
+      textMesh.mesh.position.set(
+        config.position.x,
+        config.position.y,
+        config.position.z
+      );
+      textMesh.mesh.rotation.x = (Math.PI / 180) * config.rotation.x;
+      textMesh.mesh.rotation.y = (Math.PI / 180) * config.rotation.y;
+      textMesh.mesh.rotation.z = (Math.PI / 180) * config.rotation.z;
+      scene.add(textMesh.mesh);
     });
   };
 
-  const updateText = (text: string, type: "score" | "time") => {
-    let textSize: number;
-    switch (type) {
-      case "score":
-        textSize = 50;
-        break;
-      case "time":
-        textSize = 45;
-        break;
-      default:
-        textSize = 50;
-    }
+  const updateText = (text: string, config: TextConfig, textMesh: TextMesh) => {
     const newTextGeometry = new TextGeometry(text, {
       font: usedFont,
-      size: textSize,
-      height: 10, // 立体感のための高さ
+      size: config.size,
+      depth: config.depth,
       curveSegments: 12,
       bevelEnabled: true,
       bevelThickness: 0.03,
@@ -378,32 +399,18 @@ export default function Game() {
       bevelOffset: 0,
       bevelSegments: 5,
     });
-    let mesh: THREE.Mesh;
-    switch (type) {
-      case "score":
-        mesh = textMesh;
-        // textMesh.geometry.dispose();
-        // textMesh.geometry = newTextGeometry;
-        break;
-      case "time":
-        mesh = timeTextMesh;
-        // timeTextMesh.geometry.dispose();
-        // timeTextMesh.geometry = newTextGeometry;
-        break;
-      default:
-        mesh = textMesh;
-      // textMesh.geometry.dispose();
-      // textMesh.geometry = newTextGeometry;
+    newTextGeometry.center();
+    if (textMesh.mesh) {
+      textMesh.mesh.geometry.dispose();
+      textMesh.mesh.geometry = newTextGeometry;
     }
-    mesh.geometry.dispose();
-    mesh.geometry = newTextGeometry;
   };
 
   const onCubeClick = () => {
     count += 1;
-    if (textMesh) {
-      console.log("textMesh", textMesh);
-      // updateText(formatNumber(count), "score");
+    if (scoreTextMesh) {
+      console.log("textMesh", scoreTextMesh);
+      updateText(formatNumber(count), textConfig.score, scoreTextMesh);
     }
     isTapTile = true;
   };
@@ -464,44 +471,16 @@ export default function Game() {
       walk();
     }
 
-    // if (Math.random() > 0.9) {
-    //   const newTile = makeTile();
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // let elapsedTime = Date.now() - startTimestamp;
-    // if (elapsedTime % 1000 == 0) {
-    //   const newTile = makeTile(0);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // if (elapsedTime % 1500 == 0) {
-    //   const newTile = makeTile(1);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // if (elapsedTime % 2000 == 0) {
-    //   const newTile = makeTile(2);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // if (elapsedTime % 2500 == 0) {
-    //   const newTile = makeTile(3);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // tiles.map((tile) => (tile.position.z += 0.1));
-
-    // if (!isTimeUp && timeTextMesh != undefined) {
-    //   let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
-    //   let remainingTime = startTime - elapsedTime; // タイムリミット - 経過時間
-    //   if (remainingTime > 0) {
-    //     updateText(formatTime(remainingTime), "time");
-    //   } else {
-    //     updateText("00:00.00", "time");
-    //     isTimeUp = true;
-    //   }
-    // }
+    if (!isTimeUp && timeTextMesh != undefined) {
+      let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
+      let remainingTime = startTime - elapsedTime; // タイムリミット - 経過時間
+      if (remainingTime > 0) {
+        updateText(formatTime(remainingTime), textConfig.time, timeTextMesh);
+      } else {
+        updateText("00:00.00", textConfig.time, timeTextMesh);
+        isTimeUp = true;
+      }
+    }
 
     // レンダリング
     composer.render();
