@@ -38,6 +38,8 @@ export default function Game() {
   let startTime = 20 * 1000; // 20 seconds in milliseconds
   let startTimestamp = Date.now();
   let isTimeUp = false;
+  let isTapTile = false;
+  let movedDistance = 0;
 
   const tileConfig = {
     size: {
@@ -45,6 +47,8 @@ export default function Game() {
       y: 2,
       z: 24,
     },
+    moveSpeed: 13,
+    space: 2,
   };
   const railConfig = {
     laneCount: 4,
@@ -214,6 +218,16 @@ export default function Game() {
 
     // makeText(formatNumber(count), "score");
     // makeText(formatTime(startTime), "time");
+
+    for (let i = 0; i < 10; i++) {
+      moveTile(tileConfig.size.z + tileConfig.space);
+      const randomIndex = Math.floor(Math.random() * 1000) % 4;
+      makeTile(randomIndex);
+    }
+
+    // TODO: remove before deploy prod
+    const axesHelper = new THREE.AxesHelper(400);
+    // scene.add(axesHelper);
   };
 
   const makeTile = (laneIndex: number) => {
@@ -225,7 +239,10 @@ export default function Game() {
     tile.position.z =
       tileStartPositions[laneIndex].z + tileGeometry.parameters.depth / 2;
     tile.name = "tile";
-    return tile as THREE.Mesh;
+
+    scene.add(tile);
+    tiles.push(tile);
+    movedDistance = 0;
   };
 
   const makeLine = (
@@ -388,6 +405,7 @@ export default function Game() {
       console.log("textMesh", textMesh);
       // updateText(formatNumber(count), "score");
     }
+    isTapTile = true;
   };
 
   const onTouchStart = (event: TouchEvent) => {
@@ -409,44 +427,70 @@ export default function Game() {
     }
   };
 
+  const moveTile = (distance: number) => {
+    tiles.map((tile) => (tile.position.z += distance));
+    movedDistance += distance;
+    console.log("movedDistance", movedDistance);
+  };
+  const walk = () => {
+    // 全てのタイルのzを進める
+    if (movedDistance < tileConfig.size.z + tileConfig.space) {
+      moveTile(tileConfig.moveSpeed);
+    } else {
+      // タイルをランダム生成する
+      const randomIndex = Math.floor(Math.random() * 1000) % 4;
+      makeTile(randomIndex);
+      console.log("random", randomIndex);
+      console.log("tilesNum", tiles.length);
+
+      // フラグを戻す
+      isTapTile = false;
+    }
+  };
+
   // 毎フレーム時に実行されるループイベントです
   const tick = () => {
     let newTiles = [];
     for (let i = 0; i < tiles.length; i++) {
-      if (tiles[i].position.z > 865) {
+      if (tiles[i].position.z > 400) {
         scene.remove(tiles[i]);
       } else {
         newTiles.push(tiles[i]);
       }
     }
     tiles = newTiles;
+
+    if (isTapTile) {
+      walk();
+    }
+
     // if (Math.random() > 0.9) {
     //   const newTile = makeTile();
     //   scene.add(newTile);
     //   tiles.push(newTile);
     // }
-    let elapsedTime = Date.now() - startTimestamp;
-    if (elapsedTime % 1000 == 0) {
-      const newTile = makeTile(0);
-      scene.add(newTile);
-      tiles.push(newTile);
-    }
-    if (elapsedTime % 1500 == 0) {
-      const newTile = makeTile(1);
-      scene.add(newTile);
-      tiles.push(newTile);
-    }
-    if (elapsedTime % 2000 == 0) {
-      const newTile = makeTile(2);
-      scene.add(newTile);
-      tiles.push(newTile);
-    }
-    if (elapsedTime % 2500 == 0) {
-      const newTile = makeTile(3);
-      scene.add(newTile);
-      tiles.push(newTile);
-    }
-    tiles.map((tile) => (tile.position.z += 0.1));
+    // let elapsedTime = Date.now() - startTimestamp;
+    // if (elapsedTime % 1000 == 0) {
+    //   const newTile = makeTile(0);
+    //   scene.add(newTile);
+    //   tiles.push(newTile);
+    // }
+    // if (elapsedTime % 1500 == 0) {
+    //   const newTile = makeTile(1);
+    //   scene.add(newTile);
+    //   tiles.push(newTile);
+    // }
+    // if (elapsedTime % 2000 == 0) {
+    //   const newTile = makeTile(2);
+    //   scene.add(newTile);
+    //   tiles.push(newTile);
+    // }
+    // if (elapsedTime % 2500 == 0) {
+    //   const newTile = makeTile(3);
+    //   scene.add(newTile);
+    //   tiles.push(newTile);
+    // }
+    // tiles.map((tile) => (tile.position.z += 0.1));
 
     // if (!isTimeUp && timeTextMesh != undefined) {
     //   let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
