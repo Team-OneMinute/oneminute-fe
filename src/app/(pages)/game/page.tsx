@@ -88,6 +88,37 @@ export default function Game() {
     fov: 110,
   };
 
+  const textConfig = {
+    score: {
+      position: {
+        x: railFloorConfig.size.x / 2,
+        y: 50,
+        z: 50,
+      },
+      rotation: {
+        x: -10,
+        y: 0,
+        z: 0,
+      },
+      size: 20,
+      depth: 1,
+    },
+    time: {
+      position: {
+        x: 80,
+        y: 40,
+        z: 180,
+      },
+      rotation: {
+        x: 0,
+        y: -75,
+        z: 0,
+      },
+      size: 10,
+      depth: 1,
+    },
+  };
+
   let tiles: THREE.Mesh[] = [];
   let tileStartPositions: { x: number; y: number; z: number }[] = [];
   let textMesh: THREE.Mesh;
@@ -216,8 +247,8 @@ export default function Game() {
 
     fontLoader = new FontLoader();
 
-    // makeText(formatNumber(count), "score");
-    // makeText(formatTime(startTime), "time");
+    makeText(formatNumber(count), "score");
+    makeText(formatTime(startTime), "time");
 
     for (let i = 0; i < 10; i++) {
       moveTile(tileConfig.size.z + tileConfig.space);
@@ -286,7 +317,8 @@ export default function Game() {
   };
 
   const formatNumber = (num: number): string => {
-    return num.toString().padStart(7, "0");
+    // return num.toString().padStart(7, "0");
+    return num.toString();
   };
   const formatTime = (ms: number) => {
     let seconds = Math.floor(ms / 1000);
@@ -303,32 +335,48 @@ export default function Game() {
       usedFont = font;
 
       let textSize: number;
+      let depth: number;
       let positionX: number;
       let positionY: number;
       let positionZ: number;
+      let rotationX: number;
+      let rotationY: number;
+      let rotationZ: number;
       switch (type) {
         case "score":
-          textSize = 50;
-          positionX = 28;
-          positionY = 10;
-          positionZ = -1100;
+          textSize = textConfig.score.size;
+          depth = textConfig.score.depth;
+          positionX = textConfig.score.position.x;
+          positionY = textConfig.score.position.y;
+          positionZ = textConfig.score.position.z;
+          rotationX = textConfig.score.rotation.x;
+          rotationY = textConfig.score.rotation.y;
+          rotationZ = textConfig.score.rotation.z;
           break;
         case "time":
-          textSize = 45;
-          positionX = 28;
-          positionY = 10;
-          positionZ = -800;
+          textSize = textConfig.time.size;
+          depth = textConfig.time.depth;
+          positionX = textConfig.time.position.x;
+          positionY = textConfig.time.position.y;
+          positionZ = textConfig.time.position.z;
+          rotationX = textConfig.time.rotation.x;
+          rotationY = textConfig.time.rotation.y;
+          rotationZ = textConfig.time.rotation.z;
           break;
         default:
-          textSize = 50;
-          positionX = 28;
-          positionY = 10;
-          positionZ = -1100;
+          textSize = textConfig.score.size;
+          depth = textConfig.score.depth;
+          positionX = textConfig.score.position.x;
+          positionY = textConfig.score.position.y;
+          positionZ = textConfig.score.position.z;
+          rotationX = textConfig.score.rotation.x;
+          rotationY = textConfig.score.rotation.y;
+          rotationZ = textConfig.score.rotation.z;
       }
       const textGeometry = new TextGeometry(text, {
         font: font,
         size: textSize,
-        height: 10, // 立体感のための高さ
+        depth: depth, // 立体感のための厚さ
         curveSegments: 12,
         bevelEnabled: true,
         bevelThickness: 0.03,
@@ -336,11 +384,15 @@ export default function Game() {
         bevelOffset: 0,
         bevelSegments: 5,
       });
+      textGeometry.center();
       const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
       const mesh = new THREE.Mesh(textGeometry, textMaterial);
       mesh.position.set(positionX, positionY, positionZ);
-      mesh.rotation.x = (Math.PI / 180) * -5;
-      mesh.rotation.y = (Math.PI / 180) * -40;
+      // mesh.rotation.x = (Math.PI / 180) * -5;
+      mesh.rotation.x = (Math.PI / 180) * rotationX;
+      // mesh.rotation.y = (Math.PI / 180) * -40;
+      mesh.rotation.y = (Math.PI / 180) * rotationY;
+      mesh.rotation.z = (Math.PI / 180) * rotationZ;
       scene.add(mesh);
       switch (type) {
         case "score":
@@ -357,20 +409,24 @@ export default function Game() {
 
   const updateText = (text: string, type: "score" | "time") => {
     let textSize: number;
+    let textDepth: number;
     switch (type) {
       case "score":
-        textSize = 50;
+        textSize = textConfig.score.size;
+        textDepth = textConfig.score.depth;
         break;
       case "time":
-        textSize = 45;
+        textSize = textConfig.time.size;
+        textDepth = textConfig.time.depth;
         break;
       default:
-        textSize = 50;
+        textSize = textConfig.score.size;
+        textDepth = textConfig.score.depth;
     }
     const newTextGeometry = new TextGeometry(text, {
       font: usedFont,
       size: textSize,
-      height: 10, // 立体感のための高さ
+      depth: textDepth, // 立体感のための高さ
       curveSegments: 12,
       bevelEnabled: true,
       bevelThickness: 0.03,
@@ -378,22 +434,23 @@ export default function Game() {
       bevelOffset: 0,
       bevelSegments: 5,
     });
+    newTextGeometry.center();
     let mesh: THREE.Mesh;
     switch (type) {
       case "score":
         mesh = textMesh;
-        // textMesh.geometry.dispose();
-        // textMesh.geometry = newTextGeometry;
+        textMesh.geometry.dispose();
+        textMesh.geometry = newTextGeometry;
         break;
       case "time":
         mesh = timeTextMesh;
-        // timeTextMesh.geometry.dispose();
-        // timeTextMesh.geometry = newTextGeometry;
+        timeTextMesh.geometry.dispose();
+        timeTextMesh.geometry = newTextGeometry;
         break;
       default:
         mesh = textMesh;
-      // textMesh.geometry.dispose();
-      // textMesh.geometry = newTextGeometry;
+        textMesh.geometry.dispose();
+        textMesh.geometry = newTextGeometry;
     }
     mesh.geometry.dispose();
     mesh.geometry = newTextGeometry;
@@ -403,7 +460,7 @@ export default function Game() {
     count += 1;
     if (textMesh) {
       console.log("textMesh", textMesh);
-      // updateText(formatNumber(count), "score");
+      updateText(formatNumber(count), "score");
     }
     isTapTile = true;
   };
@@ -464,44 +521,16 @@ export default function Game() {
       walk();
     }
 
-    // if (Math.random() > 0.9) {
-    //   const newTile = makeTile();
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // let elapsedTime = Date.now() - startTimestamp;
-    // if (elapsedTime % 1000 == 0) {
-    //   const newTile = makeTile(0);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // if (elapsedTime % 1500 == 0) {
-    //   const newTile = makeTile(1);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // if (elapsedTime % 2000 == 0) {
-    //   const newTile = makeTile(2);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // if (elapsedTime % 2500 == 0) {
-    //   const newTile = makeTile(3);
-    //   scene.add(newTile);
-    //   tiles.push(newTile);
-    // }
-    // tiles.map((tile) => (tile.position.z += 0.1));
-
-    // if (!isTimeUp && timeTextMesh != undefined) {
-    //   let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
-    //   let remainingTime = startTime - elapsedTime; // タイムリミット - 経過時間
-    //   if (remainingTime > 0) {
-    //     updateText(formatTime(remainingTime), "time");
-    //   } else {
-    //     updateText("00:00.00", "time");
-    //     isTimeUp = true;
-    //   }
-    // }
+    if (!isTimeUp && timeTextMesh != undefined) {
+      let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
+      let remainingTime = startTime - elapsedTime; // タイムリミット - 経過時間
+      if (remainingTime > 0) {
+        updateText(formatTime(remainingTime), "time");
+      } else {
+        updateText("00:00.00", "time");
+        isTimeUp = true;
+      }
+    }
 
     // レンダリング
     composer.render();
