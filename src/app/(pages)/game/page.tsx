@@ -8,6 +8,10 @@ import { useGameFinish } from "@/app/hooks/service/useGameFinish";
 import styled from "styled-components";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
+import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 
 export default function Game() {
   const [result, setResult] = useState<string | null>(null);
@@ -17,6 +21,7 @@ export default function Game() {
   const { finishGame } = useGameFinish();
 
   let renderer: THREE.WebGLRenderer;
+  let composer: EffectComposer;
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let light: THREE.DirectionalLight;
@@ -114,11 +119,18 @@ export default function Game() {
       canvas: document.querySelector("#myCanvas") as HTMLCanvasElement,
       antialias: true,
     });
-    renderer.setPixelRatio(ratio);
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
 
     scene = new THREE.Scene();
+
+    // ポストプロセスの設定
+    const renderTarget = new THREE.WebGLRenderTarget(
+      window.innerWidth * window.devicePixelRatio,
+      window.innerHeight * window.devicePixelRatio
+    );
+    composer = new EffectComposer(renderer, renderTarget);
 
     camera = new THREE.PerspectiveCamera(
       cameraConfig.fov,
@@ -137,14 +149,22 @@ export default function Game() {
       )
     );
 
+    // シーンのレンダリングパス
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    // FXAAの設定
+    const fxaaPass = new ShaderPass(FXAAShader);
+    fxaaPass.uniforms["resolution"].value.set(
+      1 / (window.innerWidth * window.devicePixelRatio),
+      1 / (window.innerHeight * window.devicePixelRatio)
+    );
+    composer.addPass(fxaaPass);
+
     raycaster = new THREE.Raycaster();
     touch = new THREE.Vector2();
 
-    light = new THREE.DirectionalLight(0xffffff, 1);
-    // spotLight.position.set(0, 10000, 0);
-    // spotLight.castShadow = true; // 影を落とす設定
-    // spotLight.shadow.mapSize.width = 2048;
-    // spotLight.shadow.mapSize.height = 2048;
+    light = new THREE.DirectionalLight(0xffffff, 2);
     scene.add(light);
 
     makeRail();
@@ -178,7 +198,6 @@ export default function Game() {
       };
       tileStartPositions.push(tileStartPosition);
     }
-    console.log("tileStartPositions", tileStartPositions);
 
     tileMaterial = new THREE.MeshStandardMaterial({
       color: 0x22dd22,
@@ -213,12 +232,6 @@ export default function Game() {
     lineMaterial: THREE.MeshStandardMaterial,
     position: { x: number; y: number; z: number }
   ) => {
-    // const points = [];
-    // for (let i = 0; i < positions.length; i++) {
-    //   points.push(
-    //     new THREE.Vector3(positions[i].x, positions[i].y, positions[i].z)
-    //   );
-    // }
     const lineGeometry = new THREE.BoxGeometry(
       railLineConfig.lineWidth,
       railLineConfig.lineWidth,
@@ -231,10 +244,10 @@ export default function Game() {
     line.name = "line";
     scene.add(line);
   };
+
   const makeRail = () => {
     const lineMaterial = new THREE.MeshStandardMaterial({
       color: railLineConfig.color,
-      // linewidth: railLineConfig.lineWidth,
     });
 
     const startXPoints = [];
@@ -246,26 +259,11 @@ export default function Game() {
     }
 
     for (let i = 0; i < startXPoints.length; i++) {
-      // const points = [
-      //   // start point
-      //   {
-      //     x: startXPoints[i],
-      //     y: railConfig.position.y,
-      //     z: railConfig.position.z,
-      //   },
-      //   // end point
-      //   {
-      //     x: startXPoints[i],
-      //     y: railConfig.position.y,
-      //     z: railConfig.position.z + railConfig.length,
-      //   },
-      // ];
       const point = {
         x: startXPoints[i],
         y: railConfig.position.y,
         z: railConfig.position.z,
       };
-      console.log(`point${i}`, point);
       makeLine(lineMaterial, point);
     }
   };
@@ -462,20 +460,12 @@ export default function Game() {
     // }
 
     // レンダリング
-    renderer.render(scene, camera);
+    composer.render();
     requestAnimationFrame(tick);
   };
 
   useCustomEffect(() => {
     initializeGame();
-
-    // パネルを複数作成しランダムに配置
-    // for (let i = 0; i < 60; i++) {
-    //   const box = makeBox();
-    //   boxs.push(box);
-    //   scene.add(box);
-    // }
-
     tick();
 
     window.addEventListener("touchstart", onTouchStart, false);
