@@ -13,6 +13,26 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 
+interface TextConfig {
+  position: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  rotation: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  size: number;
+  depth: number;
+  color: number;
+}
+
+interface TextMesh {
+  mesh: THREE.Mesh | null;
+}
+
 export default function Game() {
   const [result, setResult] = useState<string | null>(null);
   const [randomNum, setRandomNum] = useState<number>(0);
@@ -102,7 +122,8 @@ export default function Game() {
       },
       size: 20,
       depth: 1,
-    },
+      color: 0xffffff,
+    } as TextConfig,
     time: {
       position: {
         x: 80,
@@ -116,13 +137,18 @@ export default function Game() {
       },
       size: 10,
       depth: 1,
-    },
+      color: 0xffffff,
+    } as TextConfig,
   };
 
   let tiles: THREE.Mesh[] = [];
   let tileStartPositions: { x: number; y: number; z: number }[] = [];
-  let textMesh: THREE.Mesh;
-  let timeTextMesh: THREE.Mesh;
+  const textMeshs = {
+    score: null,
+    time: null,
+  };
+  let scoreTextMesh: TextMesh = { mesh: null };
+  let timeTextMesh: TextMesh = { mesh: null };
   let usedFont: Font;
 
   const fontUrl =
@@ -247,8 +273,8 @@ export default function Game() {
 
     fontLoader = new FontLoader();
 
-    makeText(formatNumber(count), "score");
-    makeText(formatTime(startTime), "time");
+    makeText(formatNumber(count), textConfig.score, scoreTextMesh);
+    makeText(formatTime(startTime), textConfig.time, timeTextMesh);
 
     for (let i = 0; i < 10; i++) {
       moveTile(tileConfig.size.z + tileConfig.space);
@@ -330,53 +356,15 @@ export default function Game() {
       "0"
     )}.${String(milliseconds).padStart(3, "0").substring(0, 2)}`;
   };
-  const makeText = (text: string, type: "score" | "time") => {
+  const makeText = (text: string, config: TextConfig, textMesh: TextMesh) => {
+    // let textMesh: THREE.Mesh;
     fontLoader.load(fontUrl, (font) => {
       usedFont = font;
 
-      let textSize: number;
-      let depth: number;
-      let positionX: number;
-      let positionY: number;
-      let positionZ: number;
-      let rotationX: number;
-      let rotationY: number;
-      let rotationZ: number;
-      switch (type) {
-        case "score":
-          textSize = textConfig.score.size;
-          depth = textConfig.score.depth;
-          positionX = textConfig.score.position.x;
-          positionY = textConfig.score.position.y;
-          positionZ = textConfig.score.position.z;
-          rotationX = textConfig.score.rotation.x;
-          rotationY = textConfig.score.rotation.y;
-          rotationZ = textConfig.score.rotation.z;
-          break;
-        case "time":
-          textSize = textConfig.time.size;
-          depth = textConfig.time.depth;
-          positionX = textConfig.time.position.x;
-          positionY = textConfig.time.position.y;
-          positionZ = textConfig.time.position.z;
-          rotationX = textConfig.time.rotation.x;
-          rotationY = textConfig.time.rotation.y;
-          rotationZ = textConfig.time.rotation.z;
-          break;
-        default:
-          textSize = textConfig.score.size;
-          depth = textConfig.score.depth;
-          positionX = textConfig.score.position.x;
-          positionY = textConfig.score.position.y;
-          positionZ = textConfig.score.position.z;
-          rotationX = textConfig.score.rotation.x;
-          rotationY = textConfig.score.rotation.y;
-          rotationZ = textConfig.score.rotation.z;
-      }
       const textGeometry = new TextGeometry(text, {
         font: font,
-        size: textSize,
-        depth: depth, // 立体感のための厚さ
+        size: config.size,
+        depth: config.depth,
         curveSegments: 12,
         bevelEnabled: true,
         bevelThickness: 0.03,
@@ -385,48 +373,25 @@ export default function Game() {
         bevelSegments: 5,
       });
       textGeometry.center();
-      const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const mesh = new THREE.Mesh(textGeometry, textMaterial);
-      mesh.position.set(positionX, positionY, positionZ);
-      // mesh.rotation.x = (Math.PI / 180) * -5;
-      mesh.rotation.x = (Math.PI / 180) * rotationX;
-      // mesh.rotation.y = (Math.PI / 180) * -40;
-      mesh.rotation.y = (Math.PI / 180) * rotationY;
-      mesh.rotation.z = (Math.PI / 180) * rotationZ;
-      scene.add(mesh);
-      switch (type) {
-        case "score":
-          textMesh = mesh;
-          break;
-        case "time":
-          timeTextMesh = mesh;
-          break;
-        default:
-          textMesh = mesh;
-      }
+      const textMaterial = new THREE.MeshBasicMaterial({ color: config.color });
+      textMesh.mesh = new THREE.Mesh(textGeometry, textMaterial);
+      textMesh.mesh.position.set(
+        config.position.x,
+        config.position.y,
+        config.position.z
+      );
+      textMesh.mesh.rotation.x = (Math.PI / 180) * config.rotation.x;
+      textMesh.mesh.rotation.y = (Math.PI / 180) * config.rotation.y;
+      textMesh.mesh.rotation.z = (Math.PI / 180) * config.rotation.z;
+      scene.add(textMesh.mesh);
     });
   };
 
-  const updateText = (text: string, type: "score" | "time") => {
-    let textSize: number;
-    let textDepth: number;
-    switch (type) {
-      case "score":
-        textSize = textConfig.score.size;
-        textDepth = textConfig.score.depth;
-        break;
-      case "time":
-        textSize = textConfig.time.size;
-        textDepth = textConfig.time.depth;
-        break;
-      default:
-        textSize = textConfig.score.size;
-        textDepth = textConfig.score.depth;
-    }
+  const updateText = (text: string, config: TextConfig, textMesh: TextMesh) => {
     const newTextGeometry = new TextGeometry(text, {
       font: usedFont,
-      size: textSize,
-      depth: textDepth, // 立体感のための高さ
+      size: config.size,
+      depth: config.depth,
       curveSegments: 12,
       bevelEnabled: true,
       bevelThickness: 0.03,
@@ -435,32 +400,17 @@ export default function Game() {
       bevelSegments: 5,
     });
     newTextGeometry.center();
-    let mesh: THREE.Mesh;
-    switch (type) {
-      case "score":
-        mesh = textMesh;
-        textMesh.geometry.dispose();
-        textMesh.geometry = newTextGeometry;
-        break;
-      case "time":
-        mesh = timeTextMesh;
-        timeTextMesh.geometry.dispose();
-        timeTextMesh.geometry = newTextGeometry;
-        break;
-      default:
-        mesh = textMesh;
-        textMesh.geometry.dispose();
-        textMesh.geometry = newTextGeometry;
+    if (textMesh.mesh) {
+      textMesh.mesh.geometry.dispose();
+      textMesh.mesh.geometry = newTextGeometry;
     }
-    mesh.geometry.dispose();
-    mesh.geometry = newTextGeometry;
   };
 
   const onCubeClick = () => {
     count += 1;
-    if (textMesh) {
-      console.log("textMesh", textMesh);
-      updateText(formatNumber(count), "score");
+    if (scoreTextMesh) {
+      console.log("textMesh", scoreTextMesh);
+      updateText(formatNumber(count), textConfig.score, scoreTextMesh);
     }
     isTapTile = true;
   };
@@ -525,9 +475,9 @@ export default function Game() {
       let elapsedTime = Date.now() - startTimestamp; // スタート時からの経過時間
       let remainingTime = startTime - elapsedTime; // タイムリミット - 経過時間
       if (remainingTime > 0) {
-        updateText(formatTime(remainingTime), "time");
+        updateText(formatTime(remainingTime), textConfig.time, timeTextMesh);
       } else {
-        updateText("00:00.00", "time");
+        updateText("00:00.00", textConfig.time, timeTextMesh);
         isTimeUp = true;
       }
     }
