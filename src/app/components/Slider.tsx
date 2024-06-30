@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
+import SwiperCore from "swiper";
 import "@/app/styles/swiper.css";
 
 // slide
@@ -14,6 +15,7 @@ import { UserSlide } from "@/app/slides/UserSlide";
 import { InviteSlide } from "@/app/slides/InviteSlide";
 import { GameSlide } from "@/app/slides/GameSlide";
 import { Header } from "./Organisms/Header";
+import { useRef } from "react";
 const slideName = ["GAME", "EARN", "USER", "INVITE"];
 
 const pagination = {
@@ -24,15 +26,35 @@ const pagination = {
 };
 
 export const Slider = () => {
+  const swiperRef = useRef<SwiperCore | null>(null);
+  const handleTouchStart = () => {
+    if (swiperRef.current) {
+      console.log("handleTouchStart");
+      swiperRef.current.allowTouchMove = false;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (swiperRef.current) {
+      console.log("handleTouchEnd");
+      swiperRef.current.allowTouchMove = true;
+    }
+  };
   return (
     <>
       <SwiperContainer>
         <HeaderArea>
           <Header />
         </HeaderArea>
-        <Swiper pagination={pagination} modules={[Pagination]}>
+        <Swiper
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+          }}
+          pagination={pagination}
+          modules={[Pagination]}
+        >
           <SwiperSlide>
-            <GameSlide />
+            <GameSlide handleTouchStart={handleTouchStart} handleTouchEnd={handleTouchEnd}/>
           </SwiperSlide>
           <SwiperSlide>
             <EarnSlide />
@@ -44,6 +66,10 @@ export const Slider = () => {
             <InviteSlide />
           </SwiperSlide>
         </Swiper>
+        {/* <SwiperDisableOverlay
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        /> */}
       </SwiperContainer>
     </>
   );
@@ -69,4 +95,12 @@ const HeaderArea = styled.div`
   background: rgba(0, 0, 0, 0);
 `;
 
-
+const SwiperDisableOverlay = styled.div`
+  position: absolute;
+  top: 100px; /* 無効にしたい範囲のトップ位置 */
+  left: 0px; /* 無効にしたい範囲の左位置 */
+  width: 100%; /* 無効にしたい範囲の幅 */
+  height: 300px; /* 無効にしたい範囲の高さ */
+  background: rgba(255, 255, 255, 0); /* 完全に透明にする */
+  z-index: 2; /* Swiperの上に重ねる */
+`;
