@@ -47,14 +47,17 @@ export const Slider = () => {
           <Header />
         </HeaderArea>
         <Swiper
-          onSwiper={(swiper) => {
+          onSwiper={(swiper: SwiperCore) => {
             swiperRef.current = swiper;
           }}
           pagination={pagination}
           modules={[Pagination]}
         >
           <SwiperSlide>
-            <GameSlide handleTouchStart={handleTouchStart} handleTouchEnd={handleTouchEnd}/>
+            <GameSlide
+              handleTouchStart={handleTouchStart}
+              handleTouchEnd={handleTouchEnd}
+            />
           </SwiperSlide>
           <SwiperSlide>
             <EarnSlide />
