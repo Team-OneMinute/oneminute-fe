@@ -10,8 +10,14 @@ import { usePageNavigate } from "../hooks/util/usePageNavigate";
 import { useGameInfo } from "../hooks/service/useGameInfo";
 import { useGameStart } from "../hooks/service/useGameStart";
 import { useUserInfo } from "../hooks/service/useUserInfo";
+import GameWorld from "../components/Organisms/GameWorld";
 
-export const GameSlide = () => {
+interface Props {
+  handleTouchStart: () => void;
+  handleTouchEnd: () => void;
+}
+
+export const GameSlide = (props: Props) => {
   const [selectedGameId, setSelectedGameId] = useState<string>("0001");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +29,7 @@ export const GameSlide = () => {
 
   const gameList = getGameInfoByStore();
   console.log("gameList", gameList);
-  const selectedGame = gameList.find(game => game.gameId == selectedGameId);
+  const selectedGame = gameList.find((game) => game.gameId == selectedGameId);
   const gameDescription = selectedGame ? selectedGame.description : "";
 
   const handleOpenModal = () => {
@@ -44,7 +50,7 @@ export const GameSlide = () => {
         goto("game");
     }
     console.log("");
-  }
+  };
 
   return (
     <SliderTemplate>
@@ -71,11 +77,13 @@ export const GameSlide = () => {
       >
         <ModalBody>{gameDescription}</ModalBody>
       </Modal>
-      <MapArea
-        gameList={gameList}
-        selectedGameId={selectedGameId}
-        setSelectedGameId={setSelectedGameId}
-      />
+      <GameWorldArea>
+        <GameWorld
+          handleTouchStart={props.handleTouchStart}
+          handleTouchEnd={props.handleTouchEnd}
+        />
+      </GameWorldArea>
+
       <DescriptionArea>
         <FrameTemplate frameType="001" height="23vh" width="100%">
           <DescriptionTitle>Running Man</DescriptionTitle>
@@ -94,9 +102,16 @@ export const GameSlide = () => {
   );
 };
 
+const GameWorldArea = styled.div`
+  width: 100%;
+  height: 52%;
+  position: absolute;
+  top: 20%;
+`;
+
 const DescriptionArea = styled.div`
   width: 100%;
-  margin-top: 2vh;
+  margin-top: 59vh;
 `;
 
 const DescriptionTitle = styled.div`
