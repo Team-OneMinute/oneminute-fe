@@ -59,6 +59,7 @@ export default function GameWorld(props: Props) {
     radius: 30,
     widthSegments: 15,
     heightSegments: 15,
+    hapticFeedbackRadian: 13
   };
 
   const starDustConfig = {
@@ -310,9 +311,41 @@ export default function GameWorld(props: Props) {
     userInteracting = false;
   };
 
+  const hapticHandler = () => {
+    window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+  };
+
+  const hapticFeedback = () => {
+    if (userInteracting) {
+      // Find the difference angle of the x-axis when rotating
+      const currentAzimuthalAngle = controls.getAzimuthalAngle();
+      const azimuthalAngleDifference = Math.abs(
+        currentAzimuthalAngle - previousAzimuthalAngle
+      );
+
+      // Find the difference angle of the y-axis when rotating
+      const currentPolarAngle = controls.getPolarAngle();
+      const polarAngleDifference = Math.abs(
+        currentPolarAngle - previousPolarAngle
+      );
+
+      if (
+        azimuthalAngleDifference >=
+          THREE.MathUtils.degToRad(starConfig.hapticFeedbackRadian) ||
+        polarAngleDifference >=
+          THREE.MathUtils.degToRad(starConfig.hapticFeedbackRadian)
+      ) {
+        hapticHandler();
+        previousAzimuthalAngle = currentAzimuthalAngle;
+        previousPolarAngle = currentPolarAngle;
+      }
+    }
+  };
+
   useCustomEffect(() => {
     init();
     tick();
+
     //addEvent();
     canvasRef.current!.addEventListener("touchstart", props.handleTouchStart);
     canvasRef.current!.addEventListener("touchstart", onTouchStart, false);
@@ -324,28 +357,8 @@ export default function GameWorld(props: Props) {
   const tick = () => {
     controls.update();
     renderer.render(scene, camera);
+    hapticFeedback();
     requestAnimationFrame(tick);
-
-    if (userInteracting) {
-      const currentAzimuthalAngle = controls.getAzimuthalAngle();
-      const azimuthalAngleDifference = Math.abs(
-        currentAzimuthalAngle - previousAzimuthalAngle
-      );
-
-      const currentPolarAngle = controls.getPolarAngle();
-      const polarAngleDifference = Math.abs(
-        currentPolarAngle - previousPolarAngle
-      );
-
-      if (
-        azimuthalAngleDifference >= THREE.MathUtils.degToRad(15) ||
-        polarAngleDifference >= THREE.MathUtils.degToRad(15)
-      ) {
-        window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
-        previousAzimuthalAngle = currentAzimuthalAngle;
-        previousPolarAngle = currentPolarAngle;
-      }
-    }
   };
 
   return <GameCanvas ref={canvasRef} id="myCanvas" />;
