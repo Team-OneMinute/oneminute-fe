@@ -1,7 +1,7 @@
 "use client";
 import { SliderTemplate } from "../components/Templates/SliderTemplate";
 import { MapArea } from "../components/Organisms/MapArea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FrameTemplate } from "../components/Templates/FrameTemplate";
 import styled from "styled-components";
 import { Button } from "@/app/components/Molecules/Button";
@@ -52,6 +52,10 @@ export const GameSlide = (props: Props) => {
     console.log("");
   };
 
+  useEffect(() => {
+    console.log("selected game id", selectedGameId);
+  }, [selectedGameId]);
+
   return (
     <SliderTemplate>
       <Modal
@@ -81,6 +85,8 @@ export const GameSlide = (props: Props) => {
         <GameWorld
           handleTouchStart={props.handleTouchStart}
           handleTouchEnd={props.handleTouchEnd}
+          gameList={gameList}
+          setSelectedGameId={setSelectedGameId}
         />
       </GameWorldArea>
 
