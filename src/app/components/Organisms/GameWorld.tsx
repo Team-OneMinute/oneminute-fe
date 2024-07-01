@@ -25,7 +25,8 @@ export default function GameWorld(props: Props) {
   let touch: THREE.Vector2;
   let selectedObject: THREE.Object3D | null = null;
   let userInteracting: boolean;
-  let previousAngle: number;
+  let previousAzimuthalAngle: number;
+  let previousPolarAngle: number;
 
   // TODO: props
   const worldConfig = {
@@ -251,7 +252,8 @@ export default function GameWorld(props: Props) {
 
     createControls();
     userInteracting = false;
-    previousAngle = 0;
+    previousAzimuthalAngle = 0;
+    previousPolarAngle = 0;
   };
 
   const switchSelectedGameGate = (object: THREE.Object3D) => {
@@ -325,12 +327,23 @@ export default function GameWorld(props: Props) {
     requestAnimationFrame(tick);
 
     if (userInteracting) {
-      const currentAngle = controls.getAzimuthalAngle();
-      const angleDifference = Math.abs(currentAngle - previousAngle);
+      const currentAzimuthalAngle = controls.getAzimuthalAngle();
+      const azimuthalAngleDifference = Math.abs(
+        currentAzimuthalAngle - previousAzimuthalAngle
+      );
 
-      if (angleDifference >= THREE.MathUtils.degToRad(15)) {
+      const currentPolarAngle = controls.getPolarAngle();
+      const polarAngleDifference = Math.abs(
+        currentPolarAngle - previousPolarAngle
+      );
+
+      if (
+        azimuthalAngleDifference >= THREE.MathUtils.degToRad(15) ||
+        polarAngleDifference >= THREE.MathUtils.degToRad(15)
+      ) {
         window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
-        previousAngle = currentAngle;
+        previousAzimuthalAngle = currentAzimuthalAngle;
+        previousPolarAngle = currentPolarAngle;
       }
     }
   };
