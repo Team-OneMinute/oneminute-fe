@@ -69,10 +69,6 @@ export const Slider = () => {
             <InviteSlide />
           </SwiperSlide>
         </Swiper>
-        {/* <SwiperDisableOverlay
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        /> */}
       </SwiperContainer>
     </>
   );
@@ -96,14 +92,4 @@ const HeaderArea = styled.div`
   position: relative;
   z-index: 2;
   background: rgba(0, 0, 0, 0);
-`;
-
-const SwiperDisableOverlay = styled.div`
-  position: absolute;
-  top: 100px; /* 無効にしたい範囲のトップ位置 */
-  left: 0px; /* 無効にしたい範囲の左位置 */
-  width: 100%; /* 無効にしたい範囲の幅 */
-  height: 300px; /* 無効にしたい範囲の高さ */
-  background: rgba(255, 255, 255, 0); /* 完全に透明にする */
-  z-index: 2; /* Swiperの上に重ねる */
 `;
