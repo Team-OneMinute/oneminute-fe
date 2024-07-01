@@ -24,6 +24,8 @@ export default function GameWorld(props: Props) {
   let raycaster: THREE.Raycaster;
   let touch: THREE.Vector2;
   let selectedObject: THREE.Object3D | null = null;
+  let userInteracting: boolean;
+  let previousAngle: number;
 
   // TODO: props
   const worldConfig = {
@@ -234,7 +236,7 @@ export default function GameWorld(props: Props) {
     createRender();
 
     addHelper();
-    
+
     createDirectionalLight();
     createStar();
     createStarDust();
@@ -248,6 +250,8 @@ export default function GameWorld(props: Props) {
     createRaycaster();
 
     createControls();
+    userInteracting = false;
+    previousAngle = 0;
   };
 
   const switchSelectedGameGate = (object: THREE.Object3D) => {
@@ -296,6 +300,14 @@ export default function GameWorld(props: Props) {
     }
   };
 
+  const onUserInteractionStart = () => {
+    userInteracting = true;
+  };
+
+  const onUserInteractionEnd = () => {
+    userInteracting = false;
+  };
+
   useCustomEffect(() => {
     init();
     tick();
@@ -303,12 +315,24 @@ export default function GameWorld(props: Props) {
     canvasRef.current!.addEventListener("touchstart", props.handleTouchStart);
     canvasRef.current!.addEventListener("touchstart", onTouchStart, false);
     canvasRef.current!.addEventListener("touchend", props.handleTouchEnd);
+    controls.addEventListener("start", onUserInteractionStart);
+    controls.addEventListener("end", onUserInteractionEnd);
   });
 
   const tick = () => {
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(tick);
+
+    if (userInteracting) {
+      const currentAngle = controls.getAzimuthalAngle();
+      const angleDifference = Math.abs(currentAngle - previousAngle);
+
+      if (angleDifference >= THREE.MathUtils.degToRad(15)) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+        previousAngle = currentAngle;
+      }
+    }
   };
 
   return <GameCanvas ref={canvasRef} id="myCanvas" />;
