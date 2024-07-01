@@ -1,6 +1,5 @@
 "use client";
 import { SliderTemplate } from "../components/Templates/SliderTemplate";
-import { MapArea } from "../components/Organisms/MapArea";
 import { useEffect, useState } from "react";
 import { FrameTemplate } from "../components/Templates/FrameTemplate";
 import styled from "styled-components";
@@ -89,7 +88,6 @@ export const GameSlide = (props: Props) => {
           setSelectedGameId={setSelectedGameId}
         />
       </GameWorldArea>
-
       <DescriptionArea>
         <FrameTemplate frameType="001" height="23vh" width="100%">
           <DescriptionTitle>Running Man</DescriptionTitle>
