@@ -59,7 +59,7 @@ export default function GameWorld(props: Props) {
     radius: 30,
     widthSegments: 15,
     heightSegments: 15,
-    hapticFeedbackRadian: 15
+    hapticFeedbackRadian: 13
   };
 
   const starDustConfig = {
